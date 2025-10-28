@@ -19,7 +19,10 @@ CORS(app)
 OLLAMA_BASE_URL = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434')
 OLLAMA_MODEL = os.getenv('OLLAMA_MODEL', 'llama2')
 COMFYUI_BASE_URL = os.getenv('COMFYUI_BASE_URL', 'http://localhost:8188')
-COMFYUI_PATH = os.getenv('COMFYUI_PATH', 'D:\\ComfyUI_windows_portable')
+# ComfyUI path - works with both portable and standard installations
+# Portable: D:\ComfyUI_windows_portable
+# Standard: C:\Users\YourName\ComfyUI or wherever you installed it
+COMFYUI_PATH = os.getenv('COMFYUI_PATH', '')
 CONTROLNET_MODEL = os.getenv('CONTROLNET_MODEL', '1.5\\control_v11p_sd15_openpose_fp16.safetensors')
 CONTROLNET_STRENGTH = float(os.getenv('CONTROLNET_STRENGTH', '0.8'))
 
@@ -1215,7 +1218,11 @@ if __name__ == '__main__':
     print(f"\n✨ Server starting on http://localhost:{port}")
     print(f"📡 Ollama: {OLLAMA_BASE_URL}")
     print(f"🎨 ComfyUI: {COMFYUI_BASE_URL}")
+    if COMFYUI_PATH:
+        print(f"📁 ComfyUI Path: {COMFYUI_PATH}")
     print(f"🎯 ControlNet: {CONTROLNET_MODEL} (strength: {CONTROLNET_STRENGTH})")
+    print(f"🎭 FaceDetailer: {'Enabled' if ENABLE_FACE_DETAILER else 'Disabled'}")
+    print(f"🎨 LoRA: {'Enabled' if ENABLE_LORA else 'Disabled'}")
     print("\n" + "="*50 + "\n")
     
     # Prime both services
