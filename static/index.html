@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SweetGF - Your Virtual Companion 🌸</title>
+    <title id="pageTitle">SweetGF - Your Virtual Companion 🌸</title>
     <style>
         * {
             margin: 0;
@@ -35,12 +35,14 @@
         }
 
         .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
             padding: 20px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-radius: 15px 15px 0 0;
             position: relative;
+            gap: 20px;
         }
 
         .header-avatar {
@@ -49,10 +51,9 @@
             border-radius: 50%;
             border: 4px solid white;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            margin: 0 auto 15px;
             overflow: hidden;
             background: linear-gradient(135deg, #f093fb20 0%, #f5576c20 100%);
-            display: block;
+            flex-shrink: 0;
             cursor: pointer;
             transition: transform 0.3s;
         }
@@ -76,8 +77,13 @@
             font-size: 32px;
         }
 
+        .header-info {
+            flex: 1;
+            text-align: left;
+        }
+
         .header h1 {
-            font-size: 28px;
+            font-size: 24px;
             margin-bottom: 5px;
             cursor: pointer;
             transition: opacity 0.3s;
@@ -92,8 +98,14 @@
         }
 
         .header p {
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
         }
 
         .main-content {
@@ -117,7 +129,11 @@
         }
 
         .media-browser.collapsed {
-            width: 50px;
+            width: 0;
+            min-width: 0;
+            padding: 0;
+            border: none;
+            overflow: hidden;
         }
 
         .media-header {
@@ -240,15 +256,53 @@
         }
 
         .affection-display {
-            width: 250px;
-            flex-shrink: 0;
-            padding: 15px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-radius: 12px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            height: fit-content;
-            max-height: 100%;
-            overflow-y: auto;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 280px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
+            border-radius: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            color: white;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        
+        .affection-display.minimized {
+            transform: translateX(120%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .affection-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid white;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+        
+        .affection-toggle-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .affection-toggle-btn.hidden {
+            display: none;
         }
 
         .tokens-display {
@@ -452,6 +506,7 @@
             display: flex;
             flex-direction: column;
             max-width: 65%;
+            position: relative;
         }
 
         .message-bubble {
@@ -459,6 +514,90 @@
             border-radius: 18px;
             word-wrap: break-word;
             line-height: 1.4;
+            position: relative;
+        }
+        
+        .message-bubble:hover .reaction-trigger {
+            opacity: 1;
+        }
+        
+        .reaction-trigger {
+            position: absolute;
+            top: -8px;
+            right: 8px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 14px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .reaction-trigger:hover {
+            background: #f5f5f5;
+        }
+        
+        .reaction-picker {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 8px;
+            display: none;
+            gap: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+        }
+        
+        .reaction-picker.active {
+            display: flex;
+        }
+        
+        .reaction-emoji {
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        
+        .reaction-emoji:hover {
+            transform: scale(1.2);
+            background: #f0f0f0;
+        }
+        
+        .message-reactions {
+            display: flex;
+            gap: 4px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .reaction-badge {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .reaction-badge:hover {
+            background: #f5f5f5;
+        }
+        
+        .reaction-badge.user-reacted {
+            background: #e3f2fd;
+            border-color: #2196f3;
         }
 
         .message.user .message-bubble {
@@ -804,6 +943,10 @@
         }
 
         .modal-overlay.hidden {
+            display: none;
+        }
+        
+        .modal.hidden {
             display: none;
         }
 
@@ -1238,6 +1381,23 @@
         </div>
     </div>
 
+    <!-- Clear Chat Confirmation Modal -->
+    <div class="modal-overlay" id="clearChatModal" style="display: none;">
+        <div class="modal-content" style="max-width: 400px;">
+            <h2 style="margin-bottom: 10px;">⚠️ Clear Chat</h2>
+            <p style="margin-bottom: 20px; color: #6b7280; font-size: 14px;" id="clearChatMessage">Are you sure you want to clear the conversation? This will delete all messages and reset your girlfriend.</p>
+            
+            <div style="display: flex; gap: 10px;">
+                <button id="cancelClearChat" style="flex: 1; padding: 12px 24px; background: #e5e7eb; color: #374151; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                    Cancel
+                </button>
+                <button id="confirmClearChat" style="flex: 1; padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                    Clear Chat
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Name Selection Modal -->
     <div class="modal-overlay" id="nameModal">
         <div class="modal-content">
@@ -1436,8 +1596,22 @@
                 <option value="full">Full Body (Head to toe)</option>
             </select>
             
-            <button id="confirmNameBtn">Create & Start Chatting 💌</button>
-            <p class="name-hint">Customize name, outfit & picture style to create her profile!</p>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button id="cancelNameBtn" style="flex: 1; background: #6b7280; padding: 15px; border: none; border-radius: 12px; color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;">Cancel</button>
+                <button id="confirmNameBtn" style="flex: 2;">Create & Start Chatting 💌</button>
+            </div>
+            <p class="name-hint" id="customizeHint">Choose a preset or customize everything to create her profile!</p>
+        </div>
+    </div>
+
+    <!-- Load Girlfriend Modal -->
+    <div id="loadGirlfriendModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
+            <h2 style="margin-bottom: 20px; color: #ec4899;">📂 Load Girlfriend</h2>
+            <div id="girlfriendListContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <!-- Girlfriend cards will be inserted here -->
+            </div>
+            <button id="closeLoadModalBtn" style="width: 100%; padding: 15px; background: #6b7280; border: none; border-radius: 12px; color: white; font-size: 16px; font-weight: 600; cursor: pointer;">Close</button>
         </div>
     </div>
 
@@ -1446,18 +1620,12 @@
             <div class="header-avatar" id="headerAvatar">
                 <div class="header-avatar-placeholder">💕</div>
             </div>
-            <h1 id="headerTitle" title="Double-click to customize">🌸 Luna - Your Virtual Companion</h1>
-            <p id="headerSubtitle">A wholesome AI girlfriend experience</p>
-            
-            <div class="status-bar">
-                <div class="status-indicator">
-                    <div class="status-dot" id="ollamaStatus"></div>
-                    <span>Ollama</span>
-                </div>
-                <div class="status-indicator">
-                    <div class="status-dot" id="comfyuiStatus"></div>
-                    <span>ComfyUI</span>
-                </div>
+            <div class="header-info">
+                <h1 id="headerTitle" title="Double-click to customize">🌸 Luna - Your Virtual Companion</h1>
+                <p id="headerSubtitle">A wholesome AI girlfriend experience</p>
+            </div>
+            <div class="header-actions">
+                <button id="loadGirlfriendBtnHeader" style="background: #8b5cf6; border: none; border-radius: 8px; color: white; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; margin-right: 10px; transition: all 0.3s;" title="Load Girlfriend">📂 Load</button>
                 <div class="status-indicator" style="cursor: pointer;" id="languageSelector" title="Switch Language / 切換語言">
                     <span id="currentLanguage">🌐 EN</span>
                 </div>
@@ -1465,6 +1633,9 @@
         </div>
 
         <div class="main-content">
+            <!-- Show Media Button (appears when collapsed) -->
+            <button id="showMediaBtn" style="display: none; position: fixed; right: 20px; top: 100px; background: #ec4899; border: none; border-radius: 50%; width: 50px; height: 50px; color: white; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3); z-index: 100; transition: all 0.3s;" title="Show Media Gallery">📸</button>
+            
             <!-- Media Browser -->
             <div class="media-browser" id="mediaBrowser">
                 <div class="media-header">
@@ -1487,29 +1658,6 @@
                 </div>
             </div>
 
-            <div class="affection-display" id="affectionDisplay" style="display: none;">
-                <div class="affection-level">
-                    <span id="affectionLevelText">Just Met</span>
-                    <span class="affection-points" id="affectionPoints">0 points</span>
-                </div>
-                <div class="affection-bar">
-                    <div class="affection-fill" id="affectionFill" style="width: 0%"></div>
-                </div>
-                <div class="tokens-display">
-                    <div class="tokens-balance">
-                        <span class="token-icon">💎</span>
-                        <span id="tokensBalance">0 tokens</span>
-                    </div>
-                    <div class="unlock-buttons">
-                        <button class="unlock-btn" id="unlockFlirtyBtn" title="Unlock FLIRTY content (50 tokens)">
-                            💕 Flirty (50)
-                        </button>
-                        <button class="unlock-btn" id="unlockIntimateBtn" title="Unlock INTIMATE content (150 tokens)">
-                            🔥 Intimate (150)
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="action-buttons">
@@ -1528,22 +1676,177 @@
             <button id="sendBtn">Send 💌</button>
         </div>
     </div>
+    
+    <!-- Floating Affection Display (Outside Container) -->
+    <button class="affection-toggle-btn" id="affectionToggleBtn" title="Toggle Stats">
+        💕
+    </button>
+    
+    <div class="affection-display minimized" id="affectionDisplay">
+        <div class="affection-level">
+            <span id="affectionLevelText">Just Met</span>
+            <span class="affection-points" id="affectionPoints">0 points</span>
+        </div>
+        <div class="affection-bar">
+            <div class="affection-fill" id="affectionFill" style="width: 0%"></div>
+        </div>
+        <div class="tokens-display">
+            <div class="tokens-balance">
+                <span class="token-icon">💎</span>
+                <span id="tokensBalance">0 tokens</span>
+            </div>
+            <div class="unlock-buttons">
+                <button class="unlock-btn" id="unlockFlirtyBtn" title="Unlock FLIRTY content (50 tokens)">
+                    💕 Flirty (50)
+                </button>
+                <button class="unlock-btn" id="unlockIntimateBtn" title="Unlock INTIMATE content (150 tokens)">
+                    🔥 Intimate (150)
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        let sessionId = null;
+        // Generate a unique session ID (UUID v4)
+        function generateSessionId() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Session persistence - restore from localStorage
+        let sessionId = localStorage.getItem('sessionId') || null;
         let isTyping = false;
-        let girlfriendName = null;
-        let currentAffection = 0;
+        let girlfriendName = localStorage.getItem('girlfriendName') || null;
+        let currentAffection = parseInt(localStorage.getItem('currentAffection')) || 0;
         let currentLevel = 'Just Met';
         let currentTokens = 0;
         let unlockedIntimacy = [];
         let avatarImageUrl = null;
         let currentLanguage = localStorage.getItem('language') || 'en';
         let currentPreset = null;
+        let savedOutfit = null;
+        let savedBodyComposition = null;
+        let savedPersonality = null;
+        let characterAppearance = localStorage.getItem('characterAppearance') || null;
+        let referenceImage = localStorage.getItem('referenceImage') || null;
 
-        // Translation dictionary
-        const translations = {
+        // Emoji reaction functions - MUST be defined early for onclick handlers
+        let messageReactions = {}; // Store reactions: { messageId: { emoji: count } }
+        
+        function toggleReactionPicker(messageId) {
+            const picker = document.getElementById(`picker-${messageId}`);
+            if (!picker) return;
+            
+            const allPickers = document.querySelectorAll('.reaction-picker');
+            
+            // Close all other pickers
+            allPickers.forEach(p => {
+                if (p.id !== `picker-${messageId}`) {
+                    p.classList.remove('active');
+                }
+            });
+            
+            // Toggle this picker
+            picker.classList.toggle('active');
+        }
+        
+        function addReaction(messageId, emoji) {
+            // Initialize reactions for this message if not exists
+            if (!messageReactions[messageId]) {
+                messageReactions[messageId] = {};
+            }
+            
+            // Toggle reaction (add if not exists, remove if exists)
+            if (messageReactions[messageId][emoji]) {
+                delete messageReactions[messageId][emoji];
+            } else {
+                messageReactions[messageId][emoji] = 1;
+            }
+            
+            // Update display
+            updateReactionDisplay(messageId);
+            
+            // Close picker
+            const picker = document.getElementById(`picker-${messageId}`);
+            if (picker) picker.classList.remove('active');
+            
+            // Save to localStorage
+            saveReactionsToLocalStorage();
+        }
+        
+        function updateReactionDisplay(messageId) {
+            const reactionsContainer = document.getElementById(`reactions-${messageId}`);
+            if (!reactionsContainer) return;
+            
+            const reactions = messageReactions[messageId] || {};
+            
+            if (Object.keys(reactions).length === 0) {
+                reactionsContainer.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            for (const [emoji, count] of Object.entries(reactions)) {
+                html += `
+                    <div class="reaction-badge user-reacted" onclick="removeReaction('${messageId}', '${emoji}')">
+                        <span>${emoji}</span>
+                        ${count > 1 ? `<span>${count}</span>` : ''}
+                    </div>
+                `;
+            }
+            
+            reactionsContainer.innerHTML = html;
+        }
+        
+        function removeReaction(messageId, emoji) {
+            if (messageReactions[messageId] && messageReactions[messageId][emoji]) {
+                delete messageReactions[messageId][emoji];
+                updateReactionDisplay(messageId);
+                saveReactionsToLocalStorage();
+            }
+        }
+        
+        function saveReactionsToLocalStorage() {
+            if (!girlfriendName) return;
+            const storageKey = `messageReactions_${girlfriendName}`;
+            localStorage.setItem(storageKey, JSON.stringify(messageReactions));
+        }
+        
+        function loadReactionsFromLocalStorage() {
+            if (!girlfriendName) return;
+            const storageKey = `messageReactions_${girlfriendName}`;
+            const saved = localStorage.getItem(storageKey);
+            if (saved) {
+                messageReactions = JSON.parse(saved);
+                // Update all reaction displays
+                Object.keys(messageReactions).forEach(messageId => {
+                    updateReactionDisplay(messageId);
+                });
+            }
+        }
+
+        // Load translations from JSON files
+        let translations = {};
+        
+        async function loadTranslations() {
+            try {
+                const [enData, zhData] = await Promise.all([
+                    fetch('/translations/en.json').then(r => r.json()),
+                    fetch('/translations/zh.json').then(r => r.json())
+                ]);
+                translations = { en: enData, zh: zhData };
+                console.log('[Translations] Loaded successfully');
+                // Update title immediately
+                updatePageTitle();
+            } catch (error) {
+                console.error('[Translations] Failed to load, using fallback:', error);
+                // Fallback to embedded translations
+                translations = {
             en: {
+                title: "SweetGF - Your Virtual Companion 🌸",
                 ageTitle: "Age Verification Required",
                 ageWarning: "This app contains adult content and explicit material intended for mature audiences only.",
                 ageQuestion: "Are you 18 years of age or older?",
@@ -1566,7 +1869,10 @@
                 outfitLabel: "Her Outfit:",
                 pictureStyle: "Picture Style:",
                 createButton: "Create & Start Chatting 💌",
+                cancelButton: "Cancel",
                 customizeHint: "Customize name, personality, outfit & picture style to create her profile!",
+                presetSelectedHint: "Preset selected! You can still adjust name, outfit & picture style.",
+                customizeAllHint: "Customize name, appearance, body, outfit & picture style!",
                 personalities: {
                     shy: "Shy & Sweet",
                     playful: "Playful & Cute",
@@ -1605,6 +1911,14 @@
                 purchaseBtn: "Purchase",
                 purchaseSuccess: "✅ Purchase successful! You received {amount} tokens!",
                 insufficientTokens: "Insufficient Tokens",
+                sendingPhoto: "Sending photo...",
+                failedToLoad: "Failed to load",
+                imageUnavailable: "📸 Image generation unavailable",
+                comfyuiOffline: "(ComfyUI offline)",
+                generationTimeout: "Generation timeout",
+                checkComfyui: "Check ComfyUI output folder",
+                generationFailed: "Generation failed",
+                startConversationFirst: "Start a conversation first!",
                 outfits: {
                     casual: "Casual Clothes (T-shirt & jeans)",
                     dress: "Cute Dress",
@@ -1665,6 +1979,7 @@
                 }
             },
             zh: {
+                title: "SweetGF - 你的虛擬伴侶 🌸",
                 ageTitle: "年齡驗證",
                 ageWarning: "本應用程式包含成人內容和露骨材料，僅適合成年觀眾。",
                 ageQuestion: "您是否年滿 18 歲？",
@@ -1687,7 +2002,10 @@
                 outfitLabel: "她的服裝：",
                 pictureStyle: "圖片風格：",
                 createButton: "創建並開始聊天 💌",
+                cancelButton: "取消",
                 customizeHint: "自訂名字、個性、服裝和圖片風格來創建她的個人檔案！",
+                presetSelectedHint: "已選擇預設！您仍可調整名字、服裝和圖片風格。",
+                customizeAllHint: "自訂名字、外觀、身材、服裝和圖片風格！",
                 personalities: {
                     shy: "害羞甜美",
                     playful: "活潑可愛",
@@ -1726,6 +2044,14 @@
                 purchaseBtn: "購買",
                 purchaseSuccess: "✅ 購買成功！您收到了 {amount} 個代幣！",
                 insufficientTokens: "代幣不足",
+                sendingPhoto: "正在發送照片...",
+                failedToLoad: "載入失敗",
+                imageUnavailable: "📸 圖片生成不可用",
+                comfyuiOffline: "(ComfyUI 離線)",
+                generationTimeout: "生成超時",
+                checkComfyui: "請檢查 ComfyUI 輸出資料夾",
+                generationFailed: "生成失敗",
+                startConversationFirst: "請先開始對話！",
                 outfits: {
                     casual: "休閒服裝（T恤和牛仔褲）",
                     dress: "可愛連衣裙",
@@ -1785,7 +2111,19 @@
                     }
                 }
             }
-        };
+                };
+                updatePageTitle();
+            }
+        }
+        
+        // Function to update page title
+        function updatePageTitle() {
+            const t = translations[currentLanguage];
+            if (t && t.title) {
+                document.getElementById('pageTitle').textContent = t.title;
+                document.title = t.title;
+            }
+        }
 
         // Elements
         const languageSelector = document.getElementById('languageSelector');
@@ -1798,8 +2136,7 @@
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const clearBtn = document.getElementById('clearBtn');
-        const ollamaStatus = document.getElementById('ollamaStatus');
-        const comfyuiStatus = document.getElementById('comfyuiStatus');
+        // Status indicators removed - no longer displayed
         const nameModal = document.getElementById('nameModal');
         const girlfriendNameInput = document.getElementById('girlfriendNameInput');
         const girlfriendPersonalitySelect = document.getElementById('girlfriendPersonalitySelect');
@@ -1808,7 +2145,9 @@
         const bodyShapeSelect = document.getElementById('bodyShapeSelect');
         const breastSizeSelect = document.getElementById('breastSizeSelect');
         const customBodyOptions = document.getElementById('customBodyOptions');
+        const customizeHint = document.getElementById('customizeHint');
         const confirmNameBtn = document.getElementById('confirmNameBtn');
+        const cancelNameBtn = document.getElementById('cancelNameBtn');
         const presetCards = document.querySelectorAll('.preset-card');
         const girlfriendOutfitSelect = document.getElementById('girlfriendOutfitSelect');
         const customOutfitInput = document.getElementById('customOutfitInput');
@@ -1830,6 +2169,7 @@
         const mediaBrowser = document.getElementById('mediaBrowser');
         const mediaContent = document.getElementById('mediaContent');
         const collapseMediaBtn = document.getElementById('collapseMediaBtn');
+        const showMediaBtn = document.getElementById('showMediaBtn');
 
         // Media browser state
         let generatedImages = []; // Store all generated images
@@ -1839,7 +2179,13 @@
             mediaBrowser.classList.toggle('collapsed');
             const isCollapsed = mediaBrowser.classList.contains('collapsed');
             localStorage.setItem('mediaBrowserCollapsed', isCollapsed);
-            collapseMediaBtn.title = isCollapsed ? 'Expand' : 'Collapse';
+            
+            // Show/hide floating button
+            if (isCollapsed) {
+                showMediaBtn.style.display = 'block';
+            } else {
+                showMediaBtn.style.display = 'none';
+            }
         }
 
         // Add image to media browser
@@ -1873,8 +2219,7 @@
             
             mediaContent.innerHTML = generatedImages.map(img => `
                 <div class="media-item" onclick="showImageViewer('${img.url}')" title="Click to view full size">
-                    <img src="${img.url}" alt="${img.type}" onerror="this.parentElement.innerHTML='<div style=padding:20px;text-align:center>📸<br>Error</div>';">
-                    <div class="media-item-badge ${img.type.toLowerCase()}">${img.type}</div>
+                    <img src="${img.url}" alt="Generated image" onerror="this.parentElement.innerHTML='<div style=padding:20px;text-align:center>📸<br>Error</div>';">
                 </div>
             `).join('');
         }
@@ -1914,10 +2259,15 @@
             girlfriendName = name || 'Luna';
             localStorage.setItem('girlfriendName', girlfriendName);
             
+            // Show affection display when girlfriend is set
+            const affectionDisplay = document.getElementById('affectionDisplay');
+            affectionDisplay.classList.remove('minimized');
+            
             // Update header
-            headerTitle.textContent = `🌸 ${girlfriendName} - Your Virtual Companion`;
+            const t = translations[currentLanguage] || translations['en'] || {};
+            headerTitle.textContent = `🌸 ${t.headerTitle ? t.headerTitle.replace('{name}', girlfriendName) : girlfriendName + ' - Your Virtual Companion'}`;
             headerTitle.title = 'Double-click to customize';
-            headerSubtitle.textContent = `Chat with ${girlfriendName}, your AI girlfriend`;
+            headerSubtitle.textContent = t.headerSubtitle ? t.headerSubtitle.replace('{name}', girlfriendName) : `Chat with ${girlfriendName}, your AI girlfriend`;
             
             // Update welcome message (don't regenerate image if already set)
             if (!welcomeMessage.querySelector('.profile-image-container')) {
@@ -1933,6 +2283,15 @@
         // Update UI text based on selected language
         function updateLanguage() {
             const t = translations[currentLanguage];
+            
+            // Update page title
+            updatePageTitle();
+            
+            // Update header if girlfriend exists
+            if (girlfriendName) {
+                headerTitle.textContent = `🌸 ${t.headerTitle ? t.headerTitle.replace('{name}', girlfriendName) : girlfriendName + ' - Your Virtual Companion'}`;
+                headerSubtitle.textContent = t.headerSubtitle ? t.headerSubtitle.replace('{name}', girlfriendName) : `Chat with ${girlfriendName}, your AI girlfriend`;
+            }
             
             // Update language indicator
             const langText = currentLanguage === 'en' ? '🌐 EN' : '🌐 中文';
@@ -1956,6 +2315,7 @@
             document.querySelectorAll('.modal-content label')[3].childNodes[0].textContent = t.outfitLabel + ' ';
             document.querySelectorAll('.modal-content label')[4].childNodes[0].textContent = t.pictureStyle + ' ';
             document.querySelector('#confirmNameBtn').textContent = t.createButton;
+            document.querySelector('#cancelNameBtn').textContent = t.cancelButton;
             document.querySelector('.name-hint').textContent = t.customizeHint;
             
             // Update personality options
@@ -2028,6 +2388,17 @@
             if (purchaseMessage) purchaseMessage.textContent = t.purchaseMessage;
             if (cancelPurchase) cancelPurchase.textContent = t.purchaseCancel;
             if (packageBadge) packageBadge.textContent = t.purchaseBestValue;
+            
+            // Update clear chat modal
+            const clearChatModalTitle = document.querySelector('#clearChatModal h2');
+            const clearChatMessage = document.getElementById('clearChatMessage');
+            const confirmClearChat = document.getElementById('confirmClearChat');
+            const cancelClearChat = document.getElementById('cancelClearChat');
+            
+            if (clearChatModalTitle) clearChatModalTitle.textContent = t.clearChatTitle;
+            if (clearChatMessage) clearChatMessage.textContent = t.clearChatMessage;
+            if (confirmClearChat) confirmClearChat.textContent = t.clearChatConfirm;
+            if (cancelClearChat) cancelClearChat.textContent = t.clearChatCancel;
             packageBtns.forEach(btn => btn.textContent = t.purchaseBtn);
             
             // Update welcome message if visible and no profile image
@@ -2077,12 +2448,46 @@
 
         // Initialize name modal
         function initNameModal() {
+            // Restore saved preset selection
+            const savedPreset = localStorage.getItem('selectedPreset');
+            if (savedPreset) {
+                // Find and select the saved preset card
+                presetCards.forEach(card => {
+                    if (card.dataset.preset === savedPreset) {
+                        card.classList.add('selected');
+                        // Trigger the preset selection logic
+                        const preset = girlfriendPresets[savedPreset];
+                        if (preset) {
+                            const t = translations[currentLanguage] || translations['en'] || {};
+                            const translatedName = t.presets?.[savedPreset]?.name || preset.name;
+                            girlfriendNameInput.value = translatedName;
+                            girlfriendOutfitSelect.value = preset.outfit;
+                            bodyCompositionSelect.value = preset.composition;
+                            hairColorSelect.value = preset.hairColor || 'brown';
+                            eyeColorSelect.value = preset.eyeColor || 'brown';
+                            customBodyOptions.style.display = 'none';
+                            customizeHint.textContent = t.customize?.presetHint || 'Preset selected! You can still adjust name, outfit & picture style.';
+                        } else if (savedPreset === 'custom') {
+                            customBodyOptions.style.display = 'grid';
+                            customizeHint.textContent = 'Customize name, appearance, body, outfit & picture style!';
+                        }
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                });
+            }
+            
             // Check if name is already stored
             const storedName = localStorage.getItem('girlfriendName');
             
             if (storedName) {
                 setGirlfriendName(storedName);
                 nameModal.classList.add('hidden');
+                
+                // Check if there are existing messages
+                const storageKey = `chatMessages_${storedName}`;
+                const existingMessages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                const hasExistingConversation = existingMessages.length > 0;
                 
                 // Load saved messages
                 loadMessagesFromLocalStorage();
@@ -2094,13 +2499,17 @@
                 const storedProfileImage = localStorage.getItem('profileImageUrl');
                 
                 if (storedProfileImage) {
-                    // Display existing profile image instead of regenerating
+                    // Display existing profile image
+                    // Don't generate greeting if conversation already exists
                     console.log('[Profile] Using saved profile image:', storedProfileImage);
-                    displaySavedProfileImage(storedName, storedProfileImage);
+                    displaySavedProfileImage(storedName, storedProfileImage, null, !hasExistingConversation);
                 } else {
                     // No saved profile image, generate new one
                     generateProfileImage(storedName);
                 }
+                
+                // Don't generate continuation message - let user initiate conversation
+                // The conversation history is already loaded and visible
             } else {
                 // Show modal
                 nameModal.classList.remove('hidden');
@@ -2116,7 +2525,11 @@
                 hairColor: 'pink',
                 eyeColor: 'blue',
                 outfit: 'pajamas',
-                composition: 'half'
+                composition: 'half',
+                backstory: "A gentle soul who works at a cozy bookstore cafe. Luna loves reading romance novels under moonlight and has a secret talent for writing poetry. She's been hurt before, which makes her cautious, but once she opens up, her warmth is endless. Dreams of traveling to see the Northern Lights someday.",
+                personality: "Shy and sweet, but surprisingly passionate once comfortable. Loves quiet moments, stargazing, and deep conversations. Gets flustered easily but finds it endearing when you tease her gently.",
+                likes: "Books, tea, rainy days, soft music, handwritten letters",
+                quirks: "Hides her face when embarrassed, quotes poetry randomly, keeps a dream journal"
             },
             sakura: {
                 name: 'Sakura',
@@ -2124,7 +2537,11 @@
                 hairColor: 'black',
                 eyeColor: 'brown',
                 outfit: 'school',
-                composition: 'full'
+                composition: 'full',
+                backstory: "A university student studying art who works part-time at a bubble tea shop. Sakura is the youngest of three siblings and grew up in a lively household. She's always been the cheerful one who brings people together. Secretly dreams of becoming a manga artist.",
+                personality: "Playful and cute, full of energy and optimism. Loves trying new things and making people smile. Can be a bit clumsy but it's part of her charm. Surprisingly competitive when gaming.",
+                likes: "Anime, bubble tea, cute stationery, arcade games, cherry blossoms",
+                quirks: "Makes sound effects when excited, collects plushies, doodles on everything"
             },
             amber: {
                 name: 'Amber',
@@ -2132,7 +2549,11 @@
                 hairColor: 'red',
                 eyeColor: 'amber',
                 outfit: 'lingerie',
-                composition: 'half'
+                composition: 'half',
+                backstory: "A successful fashion designer who runs her own boutique. Amber grew up in the city and learned early that confidence is key. She's had her share of admirers but is selective about who gets close. Enjoys the finer things in life but values genuine connection above all.",
+                personality: "Bold and confident, knows what she wants and isn't afraid to go after it. Flirtatious and playful, but also fiercely loyal. Has a soft spot for romantic gestures despite her tough exterior.",
+                likes: "Wine, designer fashion, jazz music, expensive perfume, sunset views",
+                quirks: "Always wears red lipstick, has a collection of vintage jewelry, purrs when content"
             },
             jade: {
                 name: 'Jade',
@@ -2140,7 +2561,11 @@
                 hairColor: 'green',
                 eyeColor: 'green',
                 outfit: 'elegant',
-                composition: 'full'
+                composition: 'full',
+                backstory: "A classical pianist and music teacher from a prestigious family. Jade studied abroad in Vienna and carries herself with grace. Despite her refined upbringing, she yearns for genuine emotional connection beyond social expectations. Finds beauty in imperfection.",
+                personality: "Elegant and mature, speaks with poise and thoughtfulness. Appreciates art, culture, and meaningful conversation. Surprisingly playful in private. Values intelligence and emotional depth.",
+                likes: "Classical music, fine dining, art galleries, gardens, philosophical discussions",
+                quirks: "Plays piano when stressed, always sits with perfect posture, secretly loves rom-coms"
             },
             violet: {
                 name: 'Violet',
@@ -2148,7 +2573,11 @@
                 hairColor: 'purple',
                 eyeColor: 'violet',
                 outfit: 'dress',
-                composition: 'half'
+                composition: 'half',
+                backstory: "A tarot reader and occult shop owner with an enigmatic past. Violet moved to the city three years ago and no one knows much about her history. She seems to know more than she lets on and has an uncanny ability to read people. Believes in fate and destiny.",
+                personality: "Mysterious and teasing, enjoys keeping you guessing. Playfully flirtatious with a hint of danger. Deeply intuitive and perceptive. Opens up slowly, revealing layers like a puzzle.",
+                likes: "Tarot cards, candles, mystery novels, stargazing, secrets",
+                quirks: "Speaks in riddles sometimes, has a black cat, knows your thoughts before you speak"
             },
             nova: {
                 name: 'Nova',
@@ -2156,12 +2585,16 @@
                 hairColor: 'blonde',
                 eyeColor: 'blue',
                 outfit: 'sporty',
-                composition: 'full'
+                composition: 'full',
+                backstory: "A personal trainer and yoga instructor who lives life to the fullest. Nova grew up near the beach and has always been active. She believes in pushing limits and living without regrets. Competed in marathons and dreams of climbing Mount Everest someday.",
+                personality: "Energetic and enthusiastic, always ready for adventure. Motivating and supportive, brings out the best in others. Down-to-earth despite her stunning looks. Loves physical affection.",
+                likes: "Fitness, smoothies, outdoor activities, sunrise runs, motivational quotes",
+                quirks: "Does stretches randomly, always has a protein shake, high-fives instead of handshakes"
             }
         };
 
         // Track selected preset
-        let selectedPreset = 'custom';
+        let selectedPreset = localStorage.getItem('selectedPreset') || 'custom';
         
         // Handle preset card selection
         presetCards.forEach(card => {
@@ -2174,6 +2607,9 @@
                 
                 // Get preset data
                 selectedPreset = this.dataset.preset;
+                
+                // Save preset to localStorage
+                localStorage.setItem('selectedPreset', selectedPreset);
                 const preset = girlfriendPresets[selectedPreset];
                 
                 if (preset) {
@@ -2188,6 +2624,8 @@
                     customOutfitInput.style.display = 'none';
                     // Hide body customization for presets
                     customBodyOptions.style.display = 'none';
+                    // Update hint for preset (translated)
+                    customizeHint.textContent = t.presetSelectedHint || 'Preset selected! You can still adjust name, outfit & picture style.';
                 } else {
                     // Custom - clear fields and show body options
                     girlfriendNameInput.value = '';
@@ -2200,6 +2638,8 @@
                     customOutfitInput.style.display = 'none';
                     // Show body customization for custom girlfriend
                     customBodyOptions.style.display = 'grid';
+                    // Update hint for custom (translated)
+                    customizeHint.textContent = t.customizeAllHint || 'Customize name, appearance, body, outfit & picture style!';
                 }
             });
         });
@@ -2259,17 +2699,67 @@
             // Store the selected preset (or use personality for custom)
             currentPreset = selectedPreset !== 'custom' ? selectedPreset : personality;
             
+            // Check if preset changed (not just name or picture style)
+            const previousPreset = window.preModalPreset || localStorage.getItem('currentPreset') || 'custom';
+            const presetChanged = currentPreset !== previousPreset;
+            
+            // Check if outfit or body composition changed BEFORE saving new values
+            const previousOutfit = localStorage.getItem('girlfriendOutfit') || 'casual';
+            const previousBodyComposition = localStorage.getItem('girlfriendBodyComposition') || 'half';
+            const outfitChanged = outfit !== previousOutfit;
+            const bodyCompositionChanged = bodyComposition !== previousBodyComposition;
+            
+            console.log('[Customization] Previous preset:', previousPreset, 'New preset:', currentPreset, 'Changed:', presetChanged);
+            console.log('[Customization] Previous outfit:', previousOutfit, 'New outfit:', outfit, 'Changed:', outfitChanged);
+            console.log('[Customization] Previous body:', previousBodyComposition, 'New body:', bodyComposition, 'Changed:', bodyCompositionChanged);
+            
+            // Persist girlfriend configuration
+            localStorage.setItem('currentPreset', currentPreset);
+            localStorage.setItem('girlfriendOutfit', outfit);
+            localStorage.setItem('girlfriendPersonality', personality);
+            localStorage.setItem('girlfriendBodyComposition', bodyComposition);
+            
             // Check if this is a rename (name changed)
             const isRename = girlfriendName && girlfriendName !== name;
+            
+            // Only clear data if preset actually changed (new girlfriend personality)
+            if (presetChanged) {
+                console.log('[Customization] Preset changed - clearing profile and conversation');
+                // Clear avatar, profile image, messages, and media for new girlfriend
+                localStorage.removeItem('avatarImageUrl');
+                localStorage.removeItem('profileImageUrl');
+                clearMessagesFromLocalStorage();
+                clearMediaFromLocalStorage();
+                avatarImageUrl = null;
+                updateHeaderAvatar(null);
+                
+                // Generate new session ID for new girlfriend
+                sessionId = generateSessionId();
+                localStorage.setItem('sessionId', sessionId);
+                console.log('[Session] Generated new session ID for new preset:', sessionId);
+            } else if (!sessionId) {
+                // Generate new session ID if none exists (after clear/reset)
+                sessionId = generateSessionId();
+                localStorage.setItem('sessionId', sessionId);
+                console.log('[Session] Generated new session ID:', sessionId);
+            }
             
             setGirlfriendName(name);
             nameModal.classList.add('hidden');
             
             // Generate profile image with outfit, body composition, appearance, and preset
-            await generateProfileImage(name, outfit, bodyComposition, appearance, currentPreset);
+            const existingProfileImage = localStorage.getItem('profileImageUrl');
             
-            // If renaming, clear the conversation
-            if (isRename) {
+            // Regenerate if: preset changed, outfit changed, body composition changed, or no profile exists
+            if (presetChanged || outfitChanged || bodyCompositionChanged || !existingProfileImage) {
+                console.log('[Customization] Generating new profile image (preset:', presetChanged, 'outfit:', outfitChanged, 'body:', bodyCompositionChanged, ')');
+                await generateProfileImage(name, outfit, bodyComposition, appearance, currentPreset);
+            } else {
+                console.log('[Customization] Keeping existing profile image (no visual changes)');
+            }
+            
+            // If renaming or preset changed, clear the conversation
+            if (isRename || presetChanged) {
                 await clearConversation();
             }
             
@@ -2277,13 +2767,14 @@
         }
 
         // Display saved profile image without regenerating
-        function displaySavedProfileImage(name, imageUrl) {
-            const t = translations[currentLanguage];
+        function displaySavedProfileImage(name, imageUrl, preset = null, generateGreeting = true) {
+            const t = translations[currentLanguage] || translations['en'] || {};
+            const welcomeTitle = t.welcomeTitle || 'Welcome! 💕';
             
             welcomeMessage.innerHTML = `
-                <h2>${t.welcomeTitle}</h2>
+                <h2>${welcomeTitle}</h2>
                 <div class="profile-image-container" style="cursor: pointer;" onclick="showImageViewer('${imageUrl}')" title="Click to view full size">
-                    <img src="${imageUrl}" alt="${name}" onerror="this.parentElement.innerHTML='<div style=padding:20px;text-align:center>📸<br>Image failed to load<br><small>Regenerating...</small></div>'; generateProfileImage('${name}');">
+                    <img src="${imageUrl}" alt="${name}" onerror="this.parentElement.innerHTML='<div style=padding:20px;text-align:center>📸<br>Image failed to load<br><small>Regenerating...</small></div>'; generateProfileImage('${name}', savedOutfit || 'casual', savedBodyComposition || 'half', null, preset);">
                 </div>
                 <div class="typing-indicator active" style="margin: 20px auto;">
                     <span class="typing-dot"></span>
@@ -2292,8 +2783,13 @@
                 </div>
             `;
             
-            // Generate AI greeting
-            generateInitialGreeting(name, imageUrl);
+            // Only generate AI greeting if requested (not on session restore with existing messages)
+            if (generateGreeting) {
+                console.log('[Profile Image] Displaying saved image with preset:', preset);
+                generateInitialGreeting(name, imageUrl, preset);
+            } else {
+                console.log('[Profile Image] Displaying saved image without generating greeting (existing conversation)');
+            }
         }
 
         // Generate initial profile image
@@ -2376,8 +2872,8 @@
             currentAffection = points;
             currentLevel = level;
             
-            // Show affection display
-            affectionDisplay.style.display = 'block';
+            // Show affection display (remove minimized class)
+            affectionDisplay.classList.remove('minimized');
             
             // Update level text
             const t = translations[currentLanguage];
@@ -2408,10 +2904,10 @@
 
         // Poll for image completion
         async function pollForImage(promptId, name, bodyComposition = 'CASUAL', preset = null, attempts = 0) {
-            const maxAttempts = 60; // Poll for up to 60 seconds
+            const maxAttempts = 600; // Poll for up to 10 minutes (600 attempts × 1s = 600s)
             
             if (attempts >= maxAttempts) {
-                console.log('[Profile Image] Polling timeout');
+                console.log('[Profile Image] Polling timeout after 10 minutes');
                 welcomeMessage.innerHTML = `
                     <h2>Welcome! 💕</h2>
                     <div class="profile-image-container">
@@ -2486,8 +2982,18 @@
             }
         }
 
+        // Track if greeting is being generated to prevent duplicates
+        let isGeneratingGreeting = false;
+        
         // Generate initial AI greeting
         async function generateInitialGreeting(name, imageUrl, preset = null) {
+            // Prevent duplicate calls
+            if (isGeneratingGreeting) {
+                console.log('[Initial Greeting] Already generating, skipping duplicate call');
+                return;
+            }
+            
+            isGeneratingGreeting = true;
             const t = translations[currentLanguage];
             let greeting = '';
             
@@ -2535,6 +3041,7 @@
                 }
 
                 sessionId = data.session_id;
+                localStorage.setItem('sessionId', sessionId);
                 
                 // Update affection level
                 if (data.affection) {
@@ -2543,7 +3050,7 @@
                 
                 // Update tokens
                 if (data.tokens) {
-                    updateTokenDisplay(data.tokens);
+                    updateTokensDisplay(data.tokens);
                 }
                 
                 greeting = data.response || t.welcomeText1.replace('{name}', name) + ' ' + t.welcomeText2;
@@ -2564,7 +3071,7 @@
             }
             
             // Display greeting with image
-            welcomeMessage.innerHTML = `
+            const welcomeHTML = `
                 <h2>${t.welcomeTitle}</h2>
                 <div class="profile-image-container" style="cursor: pointer;" onclick="showImageViewer('${imageUrl}')" title="Click to view full size">
                     <img src="${imageUrl}" alt="${name}" onerror="this.parentElement.innerHTML='<div style=padding:20px;text-align:center>📸<br>Image ready!<br><small>Check ComfyUI</small></div>';">
@@ -2572,7 +3079,14 @@
                 <p>${greeting}</p>
             `;
             
+            welcomeMessage.innerHTML = welcomeHTML;
             console.log('[Initial Greeting] Greeting displayed');
+            console.log('[Initial Greeting] Welcome message element:', welcomeMessage);
+            console.log('[Initial Greeting] Image URL:', imageUrl);
+            console.log('[Initial Greeting] Greeting text:', greeting);
+            
+            // Reset flag
+            isGeneratingGreeting = false;
         }
 
         // Update header avatar
@@ -2755,21 +3269,15 @@
             }
         }
 
-        // Check service status
+        // Check service status (simplified - status indicators hidden)
         async function checkHealth() {
             try {
                 const response = await fetch('/api/health');
                 const data = await response.json();
-                
-                ollamaStatus.className = data.services.ollama === 'connected' 
-                    ? 'status-dot' 
-                    : 'status-dot disconnected';
-                    
-                comfyuiStatus.className = data.services.comfyui === 'connected' 
-                    ? 'status-dot' 
-                    : 'status-dot disconnected';
+                // Status indicators hidden - health check runs silently
+                console.log('[Health] Services:', data.services);
             } catch (error) {
-                console.error('Health check failed:', error);
+                console.error('[Health] Check failed:', error);
             }
         }
 
@@ -2825,6 +3333,10 @@
             
             if (messages.length === 0) return;
             
+            // Clear all existing messages first to avoid duplicates
+            const existingMessages = chatContainer.querySelectorAll('.message');
+            existingMessages.forEach(msg => msg.remove());
+            
             // Clear welcome message
             const welcomeMsg = chatContainer.querySelector('.welcome-message');
             if (welcomeMsg) {
@@ -2877,6 +3389,9 @@
                 });
             }
             
+            const messageId = `msg-${msgData.timestamp}`;
+            messageDiv.setAttribute('data-message-id', messageId);
+            
             messageDiv.innerHTML = `
                 ${avatarHtml}
                 <div class="message-content">
@@ -2884,7 +3399,17 @@
                         ${msgData.text}
                         ${imagesHtml}
                         <div class="message-time">${timeString}</div>
+                        <div class="reaction-trigger" onclick="toggleReactionPicker('${messageId}')">😊+</div>
+                        <div class="reaction-picker" id="picker-${messageId}">
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '❤️')">❤️</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '😊')">😊</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '😂')">😂</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '😍')">😍</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '🔥')">🔥</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '👍')">👍</span>
+                        </div>
                     </div>
+                    <div class="message-reactions" id="reactions-${messageId}"></div>
                 </div>
             `;
             
@@ -2924,6 +3449,12 @@
             }
         }
 
+        // Format asterisk text as italic
+        function formatAsterisks(text) {
+            // Convert *text* to <em>text</em> for italic styling
+            return text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        }
+
         // Add message to chat
         function addMessage(text, sender, images = []) {
             console.log(`[Message] Adding: sender=${sender}, text=${text.substring(0, 50)}..., images=${images.length}`);
@@ -2938,6 +3469,9 @@
             
             const now = new Date();
             const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            // Format asterisks as italic
+            const formattedText = formatAsterisks(text);
             
             // Create avatar HTML
             let avatarHtml = '';
@@ -2954,32 +3488,56 @@
             let imagesHtml = '';
             if (images && images.length > 0) {
                 images.forEach(img => {
-                    if (img.status === 'generating') {
+                    if (img.status === 'completed' && img.image_url) {
+                        // Image already completed server-side!
+                        imagesHtml += `
+                            <div class="message-image" onclick="showImageViewer('${img.image_url}')" style="cursor: pointer;" title="Click to view full size">
+                                <img src="${img.image_url}" alt="Generated image" onerror="this.parentElement.innerHTML='<div style=padding:20px;text-align:center;background:#fee;border-radius:12px>❌<br>Failed to load</div>';">
+                            </div>
+                        `;
+                        // Add to media browser immediately
+                        addImageToMediaBrowser(img.image_url, img.type);
+                    } else if (img.status === 'generating') {
+                        const t = translations[currentLanguage];
                         imagesHtml += `
                             <div class="image-placeholder" data-prompt-id="${img.prompt_id}">
                                 <div class="spinner"></div>
-                                <span>Generating image...</span>
+                                <span>${t.sendingPhoto}</span>
                             </div>
                         `;
                     } else if (img.status === 'failed') {
+                        const t = translations[currentLanguage];
                         imagesHtml += `
                             <div class="image-placeholder">
-                                <span>📸 Image generation unavailable</span>
-                                <span style="font-size: 12px; margin-top: 5px;">(ComfyUI offline)</span>
+                                <span>${t.imageUnavailable}</span>
+                                <span style="font-size: 12px; margin-top: 5px;">${t.comfyuiOffline}</span>
                             </div>
                         `;
                     }
                 });
             }
             
+            const messageId = `msg-${now.getTime()}`;
+            messageDiv.setAttribute('data-message-id', messageId);
+            
             messageDiv.innerHTML = `
                 ${avatarHtml}
                 <div class="message-content">
                     <div class="message-bubble">
-                        ${text}
+                        ${formattedText}
                         ${imagesHtml}
                         <div class="message-time">${timeString}</div>
+                        <div class="reaction-trigger" onclick="toggleReactionPicker('${messageId}')">😊+</div>
+                        <div class="reaction-picker" id="picker-${messageId}">
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '❤️')">❤️</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '😊')">😊</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '😂')">😂</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '😍')">😍</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '🔥')">🔥</span>
+                            <span class="reaction-emoji" onclick="addReaction('${messageId}', '👍')">👍</span>
+                        </div>
                     </div>
+                    <div class="message-reactions" id="reactions-${messageId}"></div>
                 </div>
             `;
             
@@ -3001,16 +3559,17 @@
 
         // Poll for message image completion
         async function pollForMessageImage(promptId, messageDiv, imageType, attempts = 0) {
-            const maxAttempts = 120; // Poll for up to 2 minutes (for larger images)
+            const maxAttempts = 600; // Poll for up to 10 minutes (600 attempts × 1s = 600s)
             
             if (attempts >= maxAttempts) {
                 const placeholder = messageDiv.querySelector(`[data-prompt-id="${promptId}"]`);
                 if (placeholder) {
+                    const t = translations[currentLanguage];
                     placeholder.innerHTML = `
                         <div style="text-align: center; padding: 20px; background: #fee; border-radius: 12px; color: #dc2626;">
                             <span style="font-size: 24px;">⏱️</span><br>
-                            <span style="font-size: 14px;">Generation timeout</span><br>
-                            <span style="font-size: 12px;">Check ComfyUI output folder</span>
+                            <span style="font-size: 14px;">${t.generationTimeout}</span><br>
+                            <span style="font-size: 12px;">${t.checkComfyui}</span>
                         </div>
                     `;
                 }
@@ -3027,7 +3586,6 @@
                         placeholder.innerHTML = `
                             <div class="message-image" onclick="showImageViewer('${data.image_url}')" style="cursor: pointer;" title="Click to view full size">
                                 <img src="${data.image_url}" alt="Generated image" onerror="this.parentElement.innerHTML='<div style=padding:20px;text-align:center;background:#fee;border-radius:12px>❌<br>Failed to load</div>';">
-                                <div class="image-badge ${imageType.toLowerCase()}">${imageType}</div>
                             </div>
                         `;
                         chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -3041,10 +3599,11 @@
                 } else if (data.status === 'error') {
                     const placeholder = messageDiv.querySelector(`[data-prompt-id="${promptId}"]`);
                     if (placeholder) {
+                        const t = translations[currentLanguage];
                         placeholder.innerHTML = `
                             <div style="text-align: center; padding: 20px; background: #fee; border-radius: 12px; color: #dc2626;">
                                 <span style="font-size: 24px;">❌</span><br>
-                                <span style="font-size: 14px;">Generation failed</span>
+                                <span style="font-size: 14px;">${t.generationFailed}</span>
                             </div>
                         `;
                     }
@@ -3125,7 +3684,9 @@
                         message: message,
                         session_id: sessionId,
                         girlfriend_name: girlfriendName,
-                        language: currentLanguage
+                        language: currentLanguage,
+                        character_appearance: characterAppearance,
+                        reference_image: referenceImage
                     })
                 });
 
@@ -3136,6 +3697,20 @@
                 }
 
                 sessionId = data.session_id;
+                // Persist session ID
+                localStorage.setItem('sessionId', sessionId);
+                
+                // Save character appearance for consistency
+                if (data.character_appearance) {
+                    characterAppearance = data.character_appearance;
+                    localStorage.setItem('characterAppearance', characterAppearance);
+                }
+                
+                // Save reference image for consistency
+                if (data.reference_image) {
+                    referenceImage = data.reference_image;
+                    localStorage.setItem('referenceImage', referenceImage);
+                }
                 
                 // Update girlfriend name if it changed
                 if (data.girlfriend_name && data.girlfriend_name !== girlfriendName) {
@@ -3160,12 +3735,20 @@
             }
         }
 
+        // Show clear chat confirmation modal
+        function showClearChatModal() {
+            const clearChatModal = document.getElementById('clearChatModal');
+            clearChatModal.style.display = 'flex';
+        }
+        
+        // Hide clear chat confirmation modal
+        function hideClearChatModal() {
+            const clearChatModal = document.getElementById('clearChatModal');
+            clearChatModal.style.display = 'none';
+        }
+
         // Clear conversation
         async function clearConversation() {
-            if (!confirm('Are you sure you want to clear the conversation?')) {
-                return;
-            }
-
             try {
                 await fetch('/api/conversation/clear', {
                     method: 'POST',
@@ -3178,29 +3761,189 @@
                     })
                 });
 
-                const t = translations[currentLanguage];
-                chatContainer.innerHTML = `
-                    <div class="welcome-message">
-                        <h2>${t.welcomeTitle}</h2>
-                        <p>${t.welcomeText1.replace('{name}', girlfriendName)}</p>
-                        <p>${t.welcomeText2}</p>
-                    </div>
-                `;
+                // Clear chat container but recreate welcome message element
+                chatContainer.innerHTML = '<div class="welcome-message" id="welcomeMessage"></div>';
                 
                 // Clear messages and media from localStorage
                 clearMessagesFromLocalStorage();
                 clearMediaFromLocalStorage();
                 
+                // Reset session
                 sessionId = null;
+                localStorage.removeItem('sessionId');
+                
+                // Reset girlfriend data
+                girlfriendName = null;
+                localStorage.removeItem('girlfriendName');
+                localStorage.removeItem('profileImageUrl');
+                localStorage.removeItem('avatarImageUrl');
+                localStorage.removeItem('currentPreset');
+                localStorage.removeItem('girlfriendOutfit');
+                localStorage.removeItem('girlfriendPersonality');
+                localStorage.removeItem('girlfriendBodyComposition');
+                
+                // Reset affection and tokens
+                currentAffection = 0;
+                currentTokens = 0;
+                localStorage.removeItem('currentAffection');
+                
+                // Reset header
+                const headerTitle = document.getElementById('headerTitle');
+                headerTitle.textContent = '🌸 SweetGF - Your Virtual Companion';
+                
+                // Reset avatar
+                const headerAvatar = document.getElementById('headerAvatar');
+                headerAvatar.innerHTML = '<div class="header-avatar-placeholder">💕</div>';
+                avatarImageUrl = null;
+                
+                // Hide clear modal
+                hideClearChatModal();
+                
+                // Show girlfriend customization modal
+                nameModal.classList.remove('hidden');
+                
+                console.log('[Clear] Chat cleared, showing girlfriend customization modal');
             } catch (error) {
                 console.error('Error clearing conversation:', error);
             }
         }
 
+        // Toggle affection display
+        function toggleAffectionDisplay() {
+            const affectionDisplay = document.getElementById('affectionDisplay');
+            affectionDisplay.classList.toggle('minimized');
+        }
+        
         // Event listeners
         collapseMediaBtn.addEventListener('click', toggleMediaBrowser);
+        showMediaBtn.addEventListener('click', toggleMediaBrowser);
+        
+        // Check initial collapsed state
+        const savedCollapsed = localStorage.getItem('mediaBrowserCollapsed') === 'true';
+        if (savedCollapsed) {
+            mediaBrowser.classList.add('collapsed');
+            showMediaBtn.style.display = 'block';
+        }
+        
+        // Affection toggle button
+        document.getElementById('affectionToggleBtn').addEventListener('click', toggleAffectionDisplay);
         
         confirmNameBtn.addEventListener('click', confirmName);
+        cancelNameBtn.addEventListener('click', () => {
+            nameModal.classList.add('hidden');
+        });
+        
+        // Load Girlfriend button
+        const loadGirlfriendModal = document.getElementById('loadGirlfriendModal');
+        const girlfriendListContainer = document.getElementById('girlfriendListContainer');
+        const closeLoadModalBtn = document.getElementById('closeLoadModalBtn');
+        
+        async function showLoadGirlfriendModal() {
+            console.log('[Load] Opening load girlfriend modal...');
+            try {
+                const response = await fetch('/api/list-girlfriends');
+                const data = await response.json();
+                
+                if (data.girlfriends && data.girlfriends.length > 0) {
+                    // Clear previous content
+                    girlfriendListContainer.innerHTML = '';
+                    
+                    // Create girlfriend cards
+                    data.girlfriends.forEach(gf => {
+                        const date = new Date(gf.last_updated).toLocaleString();
+                        const affectionLevel = getAffectionLevelName(gf.affection_level);
+                        
+                        const card = document.createElement('div');
+                        card.style.cssText = `
+                            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+                            border: 2px solid #ec4899;
+                            border-radius: 16px;
+                            padding: 20px;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                            text-align: center;
+                        `;
+                        
+                        card.innerHTML = `
+                            <div style="font-size: 48px; margin-bottom: 10px;">💕</div>
+                            <h3 style="margin: 0 0 10px 0; color: #ec4899; font-size: 20px;">${gf.name}</h3>
+                            <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+                                <div style="margin: 4px 0;">❤️ ${affectionLevel}</div>
+                                <div style="margin: 4px 0;">💰 ${gf.tokens} tokens</div>
+                                <div style="margin: 4px 0; font-size: 12px; opacity: 0.7;">📅 ${date}</div>
+                            </div>
+                        `;
+                        
+                        card.addEventListener('mouseenter', () => {
+                            card.style.transform = 'translateY(-5px)';
+                            card.style.boxShadow = '0 8px 16px rgba(236, 72, 153, 0.3)';
+                        });
+                        
+                        card.addEventListener('mouseleave', () => {
+                            card.style.transform = 'translateY(0)';
+                            card.style.boxShadow = 'none';
+                        });
+                        
+                        card.addEventListener('click', async () => {
+                            try {
+                                const loadResponse = await fetch('/api/load-girlfriend', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ session_id: gf.session_id })
+                                });
+                                
+                                const loadData = await loadResponse.json();
+                                
+                                if (loadData.success) {
+                                    sessionId = loadData.data.session_id;
+                                    localStorage.setItem('sessionId', sessionId);
+                                    localStorage.setItem('girlfriendName', loadData.data.girlfriend_name);
+                                    location.reload();
+                                } else {
+                                    alert('Failed to load girlfriend: ' + (loadData.error || 'Unknown error'));
+                                }
+                            } catch (error) {
+                                console.error('[Load] Error:', error);
+                                alert('Error loading girlfriend: ' + error.message);
+                            }
+                        });
+                        
+                        girlfriendListContainer.appendChild(card);
+                    });
+                    
+                    // Show modal
+                    loadGirlfriendModal.classList.remove('hidden');
+                } else {
+                    alert('No saved girlfriends found. Create a new one first!');
+                }
+            } catch (error) {
+                console.error('[Load] Error:', error);
+                alert('Error loading girlfriends: ' + error.message);
+            }
+        }
+        
+        // Attach to header button
+        document.getElementById('loadGirlfriendBtnHeader').addEventListener('click', showLoadGirlfriendModal);
+        
+        closeLoadModalBtn.addEventListener('click', () => {
+            loadGirlfriendModal.classList.add('hidden');
+        });
+        
+        // Close modal when clicking outside
+        loadGirlfriendModal.addEventListener('click', (e) => {
+            if (e.target === loadGirlfriendModal) {
+                loadGirlfriendModal.classList.add('hidden');
+            }
+        });
+        
+        // Helper function to get affection level name
+        function getAffectionLevelName(points) {
+            if (points >= 201) return 'Intimate Partner ❤️‍🔥';
+            if (points >= 101) return 'Romantic Interest 💕';
+            if (points >= 51) return 'Close Friend 💖';
+            if (points >= 21) return 'Getting to Know 💗';
+            return 'Just Met 💝';
+        }
         girlfriendNameInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 confirmName();
@@ -3217,7 +3960,11 @@
                 sendMessage();
             }
         });
-        clearBtn.addEventListener('click', clearConversation);
+        clearBtn.addEventListener('click', showClearChatModal);
+        
+        // Clear chat modal buttons
+        document.getElementById('confirmClearChat').addEventListener('click', clearConversation);
+        document.getElementById('cancelClearChat').addEventListener('click', hideClearChatModal);
         
         // Token unlock buttons
         unlockFlirtyBtn.addEventListener('click', () => {
@@ -3242,18 +3989,15 @@
             // Pre-fill current name
             girlfriendNameInput.value = girlfriendName;
             
+            // Store the current preset before opening modal
+            window.preModalPreset = currentPreset || localStorage.getItem('currentPreset') || 'custom';
+            
             // Show the modal for customization
             nameModal.classList.remove('hidden');
             girlfriendNameInput.focus();
             girlfriendNameInput.select();
             
-            // Clear avatar, profile image, messages, and media so new girlfriend starts fresh
-            localStorage.removeItem('avatarImageUrl');
-            localStorage.removeItem('profileImageUrl');
-            clearMessagesFromLocalStorage();
-            clearMediaFromLocalStorage();
-            avatarImageUrl = null;
-            updateHeaderAvatar(null);
+            // Don't clear anything yet - wait until they confirm with a different preset
         });
 
         // Initialize
@@ -3266,8 +4010,16 @@
             collapseMediaBtn.title = 'Expand';
         }
         
-        // Apply saved language preference
-        updateLanguage();
+        // Load translations from JSON files and then update language
+        loadTranslations().then(() => {
+            // Apply saved language preference after translations are loaded
+            updateLanguage();
+            
+            // Restore girlfriend session after translations are loaded
+            if (girlfriendName && sessionId) {
+                restoreGirlfriendSession();
+            }
+        });
         
         checkHealth();
         setInterval(checkHealth, 30000); // Check every 30 seconds
@@ -3279,8 +4031,197 @@
             updateHeaderAvatar(storedAvatar);
         }
         
+        // Function to restore girlfriend session
+        async function restoreGirlfriendSession() {
+            console.log('[Session] Restoring girlfriend:', girlfriendName, 'session:', sessionId);
+            
+            // Ensure send button is enabled on page load
+            isTyping = false;
+            sendBtn.disabled = false;
+            
+            // Show affection display when session is restored
+            const affectionDisplay = document.getElementById('affectionDisplay');
+            affectionDisplay.classList.remove('minimized');
+            
+            // Fetch girlfriend data from backend to restore affection and tokens
+            try {
+                const response = await fetch('/api/load-girlfriend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: sessionId })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success && result.data) {
+                        const data = result.data;
+                        
+                        // Restore affection
+                        if (data.affection_level !== undefined) {
+                            const affectionData = {
+                                points: data.affection_level,
+                                level: getAffectionLevelName(data.affection_level),
+                                gained: 0
+                            };
+                            updateAffectionDisplay(affectionData);
+                            console.log('[Session] Restored affection:', data.affection_level);
+                        }
+                        
+                        // Restore tokens
+                        if (data.tokens !== undefined) {
+                            tokensBalance.textContent = data.tokens;
+                            console.log('[Session] Restored tokens:', data.tokens);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('[Session] Error loading girlfriend data:', error);
+            }
+            
+            // Helper function to get affection level name
+            function getAffectionLevelName(points) {
+                if (points >= 201) return 'Intimate Partner';
+                if (points >= 101) return 'Romantic Interest';
+                if (points >= 51) return 'Close Friend';
+                if (points >= 21) return 'Getting to Know';
+                return 'Just Met';
+            }
+            
+            // Restore preset and personality (set global variables)
+            currentPreset = localStorage.getItem('currentPreset');
+            savedPersonality = localStorage.getItem('girlfriendPersonality');
+            savedOutfit = localStorage.getItem('girlfriendOutfit');
+            savedBodyComposition = localStorage.getItem('girlfriendBodyComposition');
+            
+            console.log('[Session] Restored personality:', savedPersonality);
+            console.log('[Session] Restored outfit:', savedOutfit);
+            console.log('[Session] Restored body composition:', savedBodyComposition);
+            
+            // Update header with girlfriend name
+            const headerTitle = document.getElementById('headerTitle');
+            headerTitle.textContent = `🌸 ${girlfriendName} - Your Virtual Companion`;
+            
+            // Hide name modal, show chat
+            nameModal.classList.add('hidden');
+            
+            // Check if there are existing messages
+            const storageKey = `chatMessages_${girlfriendName}`;
+            const existingMessages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const hasExistingConversation = existingMessages.length > 0;
+            
+            console.log('[Session] Existing messages:', existingMessages.length);
+            
+            // Restore profile image if available
+            const storedProfileImage = localStorage.getItem('profileImageUrl');
+            if (storedProfileImage) {
+                // Don't generate greeting if conversation already exists
+                displaySavedProfileImage(girlfriendName, storedProfileImage, currentPreset || savedPersonality, !hasExistingConversation);
+                console.log('[Session] Note: Profile image shows original outfit from creation, not current outfit:', savedOutfit);
+            }
+            
+            // Restore media gallery
+            loadMediaFromLocalStorage();
+            console.log('[Session] Restored media gallery:', generatedImages.length, 'images');
+            
+            // Restore messages (this will remove welcome message if messages exist)
+            loadMessagesFromLocalStorage();
+            
+            // Generate continuation message if there's an existing conversation
+            // But only if the last message is old enough (not from a recent page load)
+            if (hasExistingConversation) {
+                const lastMessage = existingMessages[existingMessages.length - 1];
+                const lastMessageTime = lastMessage ? lastMessage.timestamp : 0;
+                const timeSinceLastMessage = Date.now() - lastMessageTime;
+                const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
+                
+                // Only generate continuation if last message was more than 5 minutes ago
+                if (timeSinceLastMessage > fiveMinutes) {
+                    // Small delay to ensure messages are fully loaded before showing typing indicator
+                    setTimeout(() => {
+                        generateContinuationMessage(girlfriendName);
+                    }, 100);
+                } else {
+                    console.log('[Continuation] Skipping - last message too recent');
+                }
+            }
+        }
+        
+        // Generate a continuation message when restoring session
+        async function generateContinuationMessage(name) {
+            try {
+                console.log('[Continuation] Generating continuation message for', name);
+                
+                const t = translations[currentLanguage];
+                
+                // Build a contextual continuation prompt that references chat history
+                // This will be sent as a user message, and the AI will respond naturally
+                // based on personality and previous conversation
+                const continuationPrompt = currentLanguage === 'zh'
+                    ? "嗨！我回來了～"
+                    : "Hey! I'm back~";
+                
+                // Add typing indicator
+                setTyping(true);
+                
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: continuationPrompt,
+                        session_id: sessionId,
+                        girlfriend_name: name,
+                        language: currentLanguage
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                sessionId = data.session_id;
+                localStorage.setItem('sessionId', sessionId);
+                
+                // Update affection level
+                if (data.affection) {
+                    updateAffectionDisplay(data.affection);
+                }
+                
+                // Update tokens
+                if (data.tokens) {
+                    updateTokensDisplay(data.tokens);
+                }
+                
+                setTyping(false);
+                addMessage(data.response, 'assistant', data.images || []);
+                
+                console.log('[Continuation] Message sent successfully');
+            } catch (error) {
+                console.error('[Continuation] Error:', error);
+                setTyping(false);
+                // Silently fail - don't show error to user
+            }
+        }
+        
+        // Close reaction pickers when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.reaction-trigger') && !e.target.closest('.reaction-picker')) {
+                document.querySelectorAll('.reaction-picker').forEach(p => {
+                    p.classList.remove('active');
+                });
+            }
+        });
+        
         // Check age verification first, then init app
         checkAgeVerification();
+        
+        // Load reactions after messages are loaded
+        setTimeout(() => {
+            loadReactionsFromLocalStorage();
+        }, 500);
     </script>
 </body>
 </html>

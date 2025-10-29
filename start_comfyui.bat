@@ -22,13 +22,15 @@ echo.
 REM Check if it's the portable version with run_nvidia_gpu.bat
 if exist "run_nvidia_gpu.bat" (
     echo Detected portable version with NVIDIA GPU...
-    call run_nvidia_gpu.bat
+    echo Starting with --gpu-only flag to keep models in VRAM...
+    call run_nvidia_gpu.bat --gpu-only
 ) else if exist "run_cpu.bat" (
     echo Detected portable version with CPU mode...
     call run_cpu.bat
 ) else if exist "main.py" (
     echo Detected standard installation...
-    python main.py
+    echo Starting with --gpu-only flag to keep models in VRAM...
+    python main.py --gpu-only
 ) else (
     echo [ERROR] Could not find ComfyUI startup script
     pause

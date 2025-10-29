@@ -1,0 +1,10 @@
+{
+  "15": {
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "scale_by": 2.0,
+      "image": ["8", 0]
+    },
+    "class_type": "ImageScaleBy"
+  }
+}

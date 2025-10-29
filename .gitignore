@@ -48,3 +48,6 @@ Thumbs.db
 # Generated images
 output/
 generated_images/
+
+# Girlfriend data (contains personal conversations)
+girlfriends/
