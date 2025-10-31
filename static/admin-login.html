@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SweetGF - Admin Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #1e3a8a;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: #fbbf24;
+            color: #78350f;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e3a8a;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .user-login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .user-login-link a {
+            color: #1e3a8a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .user-login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            color: #78350f;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(30, 58, 138, 0.1);
+            border: 2px solid rgba(30, 58, 138, 0.3);
+            color: #1e3a8a;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-switch:hover {
+            background: rgba(30, 58, 138, 0.2);
+            border-color: rgba(30, 58, 138, 0.5);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container" style="position: relative;">
+        <button class="lang-switch" id="langSwitch" title="Switch Language / 切換語言">
+            🌐 EN
+        </button>
+        
+        <div class="logo">
+            <h1>⚙️ SweetGF Admin</h1>
+            <p id="logoSubtitle">Administrative Access</p>
+            <div style="margin-top: 15px;">
+                <span class="admin-badge" id="adminBadge">🔒 ADMIN ONLY</span>
+            </div>
+        </div>
+
+        <div class="warning-box" id="warningBox">
+            ⚠️ This area is restricted to administrators only. Unauthorized access is prohibited.
+        </div>
+
+        <div id="message-container"></div>
+
+        <!-- Admin Login Form -->
+        <form onsubmit="handleAdminLogin(event)">
+            <div class="form-group">
+                <label for="admin-username" id="usernameLabel">Admin Username</label>
+                <input type="text" id="admin-username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="admin-password" id="passwordLabel">Admin Password</label>
+                <input type="password" id="admin-password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn" id="admin-login-btn">Admin Login</button>
+        </form>
+
+        <div class="user-login-link" id="userLoginLink">
+            Not an admin? <a href="/login.html" id="userLoginBtn">User Login</a>
+        </div>
+    </div>
+
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                logoSubtitle: "Administrative Access",
+                adminBadge: "🔒 ADMIN ONLY",
+                warningBox: "⚠️ This area is restricted to administrators only. Unauthorized access is prohibited.",
+                usernameLabel: "Admin Username",
+                passwordLabel: "Admin Password",
+                loginBtn: "Admin Login",
+                userLoginText: "Not an admin?",
+                userLoginBtn: "User Login"
+            },
+            zh: {
+                logoSubtitle: "管理員訪問",
+                adminBadge: "🔒 僅限管理員",
+                warningBox: "⚠️ 此區域僅限管理員訪問。禁止未經授權的訪問。",
+                usernameLabel: "管理員用戶名",
+                passwordLabel: "管理員密碼",
+                loginBtn: "管理員登入",
+                userLoginText: "不是管理員？",
+                userLoginBtn: "用戶登入"
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'en';
+
+        function updateLanguage() {
+            const t = translations[currentLanguage];
+            const langText = currentLanguage === 'en' ? '🌐 EN' : '🌐 中文';
+            
+            document.getElementById('langSwitch').textContent = langText;
+            document.getElementById('logoSubtitle').textContent = t.logoSubtitle;
+            document.getElementById('adminBadge').textContent = t.adminBadge;
+            document.getElementById('warningBox').textContent = t.warningBox;
+            document.getElementById('usernameLabel').textContent = t.usernameLabel;
+            document.getElementById('passwordLabel').textContent = t.passwordLabel;
+            document.getElementById('admin-login-btn').textContent = t.loginBtn;
+            document.getElementById('userLoginLink').innerHTML = `${t.userLoginText} <a href="/login.html">${t.userLoginBtn}</a>`;
+            
+            localStorage.setItem('language', currentLanguage);
+        }
+
+        // Language switch handler
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('langSwitch').addEventListener('click', function() {
+                currentLanguage = currentLanguage === 'en' ? 'zh' : 'en';
+                updateLanguage();
+            });
+
+            updateLanguage();
+        });
+
+        function showMessage(message, type = 'error') {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            const btn = document.getElementById('admin-login-btn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Verifying...';
+            
+            try {
+                const response = await fetch('/api/auth/admin-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (data.user.is_admin) {
+                        showMessage('Admin login successful! Redirecting...', 'success');
+                        
+                        // Store session token
+                        localStorage.setItem('session_token', data.session_token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        
+                        // Redirect to admin dashboard
+                        setTimeout(() => {
+                            window.location.href = '/admin.html';
+                        }, 1000);
+                    } else {
+                        showMessage('Access denied: Admin privileges required');
+                        btn.disabled = false;
+                        btn.textContent = 'Admin Login';
+                    }
+                } else {
+                    showMessage(data.error || 'Admin login failed');
+                    btn.disabled = false;
+                    btn.textContent = 'Admin Login';
+                }
+            } catch (error) {
+                console.error('Admin login error:', error);
+                showMessage('Network error. Please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Admin Login';
+            }
+        }
+
+        // Check if already logged in as admin
+        async function checkExistingAuth() {
+            try {
+                const response = await fetch('/api/auth/check');
+                const data = await response.json();
+                
+                if (data.authenticated && data.user.is_admin) {
+                    window.location.href = '/admin.html';
+                }
+            } catch (error) {
+                // Not logged in, stay on admin login page
+            }
+        }
+
+        checkExistingAuth();
+    </script>
+</body>
+</html>

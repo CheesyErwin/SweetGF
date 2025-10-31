@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SweetGF - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            color: #666;
+            font-weight: 600;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        /* Age Verification Modal */
+        .age-verification-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+
+        .age-verification-overlay.hidden {
+            display: none;
+        }
+
+        .age-verification-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            color: white;
+        }
+
+        .age-verification-content h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .age-verification-content h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .age-verification-content p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .age-verification-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .age-verification-buttons button {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .age-verify-yes {
+            background: white;
+            color: #764ba2;
+        }
+
+        .age-verify-yes:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .age-verify-no {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .age-verify-no:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .age-warning {
+            margin-top: 20px;
+            font-size: 13px;
+            opacity: 0.8;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 20px;
+        }
+
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-switch:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .auth-lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-lang-switch:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Age Verification Modal -->
+    <div class="age-verification-overlay" id="ageVerification">
+        <div class="age-verification-content">
+            <button class="lang-switch" id="ageLangSwitch" title="Switch Language / 切換語言">
+                🌐 EN
+            </button>
+            <h1>🔞</h1>
+            <h2 id="ageTitle">Age Verification Required</h2>
+            <p>This app contains adult content and explicit material intended for mature audiences only.</p>
+            <p><strong>Are you 18 years of age or older?</strong></p>
+            
+            <div class="age-verification-buttons">
+                <button class="age-verify-yes" id="ageVerifyYes">
+                    ✓ Yes, I am 18+
+                </button>
+                <button class="age-verify-no" id="ageVerifyNo">
+                    ✗ No, I'm under 18
+                </button>
+            </div>
+            
+            <div class="age-warning">
+                ⚠️ By clicking "Yes", you confirm that you are of legal age and consent to viewing adult content.
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-container" style="position: relative;">
+        <button class="auth-lang-switch" id="authLangSwitch" title="Switch Language / 切換語言">
+            🌐 EN
+        </button>
+        
+        <div class="logo">
+            <h1>💕 SweetGF</h1>
+            <p id="logoSubtitle">Your AI Girlfriend Experience</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('login')" id="loginTab">Login</div>
+            <div class="tab" onclick="switchTab('register')" id="registerTab">Register</div>
+        </div>
+
+        <div id="message-container"></div>
+
+        <!-- Login Form -->
+        <div id="login-form" class="form-section active">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-username" id="loginUsernameLabel">Username or Email</label>
+                    <input type="text" id="login-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password" id="loginPasswordLabel">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn" id="login-btn">Login</button>
+            </form>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="form-section">
+            <form onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label for="register-username" id="registerUsernameLabel">Username</label>
+                    <input type="text" id="register-username" required minlength="3" maxlength="20">
+                </div>
+                <div class="form-group">
+                    <label for="register-email" id="registerEmailLabel">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password" id="registerPasswordLabel">Password</label>
+                    <input type="password" id="register-password" required minlength="8">
+                    <div class="password-requirements" id="passwordRequirements">
+                        Must be at least 8 characters with letters and numbers
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="register-password-confirm" id="registerPasswordConfirmLabel">Confirm Password</label>
+                    <input type="password" id="register-password-confirm" required>
+                </div>
+                <button type="submit" class="btn" id="register-btn">Register</button>
+            </form>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+            <p style="font-size: 13px; color: #666;" id="adminLinkText">
+                Admin? <a href="/admin-login.html" style="color: #1e3a8a; text-decoration: none; font-weight: 600;" id="adminLinkBtn">Admin Login</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Language translations
+        const translations = {
+            en: {
+                logoSubtitle: "Your AI Girlfriend Experience",
+                loginTab: "Login",
+                registerTab: "Register",
+                loginUsernameLabel: "Username or Email",
+                loginPasswordLabel: "Password",
+                loginBtn: "Login",
+                registerUsernameLabel: "Username",
+                registerEmailLabel: "Email",
+                registerPasswordLabel: "Password",
+                registerPasswordConfirmLabel: "Confirm Password",
+                passwordRequirements: "Must be at least 8 characters with letters and numbers",
+                registerBtn: "Register",
+                adminLinkText: "Admin?",
+                adminLinkBtn: "Admin Login",
+                ageTitle: "Age Verification Required",
+                ageWarning: "This app contains adult content and explicit material intended for mature audiences only.",
+                ageQuestion: "Are you 18 years of age or older?",
+                ageYes: "✓ Yes, I am 18+",
+                ageNo: "✗ No, I'm under 18",
+                ageConsent: "⚠️ By clicking \"Yes\", you confirm that you are of legal age and consent to viewing adult content.",
+                ageAlert: "You must be 18 or older to access this content."
+            },
+            zh: {
+                logoSubtitle: "你的AI女友體驗",
+                loginTab: "登入",
+                registerTab: "註冊",
+                loginUsernameLabel: "用戶名或電郵",
+                loginPasswordLabel: "密碼",
+                loginBtn: "登入",
+                registerUsernameLabel: "用戶名",
+                registerEmailLabel: "電郵",
+                registerPasswordLabel: "密碼",
+                registerPasswordConfirmLabel: "確認密碼",
+                passwordRequirements: "至少8個字符，包含字母和數字",
+                registerBtn: "註冊",
+                adminLinkText: "管理員？",
+                adminLinkBtn: "管理員登入",
+                ageTitle: "年齡驗證要求",
+                ageWarning: "此應用程式包含成人內容和露骨材料，僅適用於成年觀眾。",
+                ageQuestion: "您是否年滿18歲？",
+                ageYes: "✓ 是的，我已年滿18歲",
+                ageNo: "✗ 不，我未滿18歲",
+                ageConsent: "⚠️ 點擊「是」即表示您確認已達法定年齡並同意查看成人內容。",
+                ageAlert: "您必須年滿18歲才能訪問此內容。"
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'en';
+
+        function updateLanguage() {
+            const t = translations[currentLanguage];
+            const langText = currentLanguage === 'en' ? '🌐 EN' : '🌐 中文';
+            
+            // Update language buttons
+            document.getElementById('ageLangSwitch').textContent = langText;
+            document.getElementById('authLangSwitch').textContent = langText;
+            
+            // Update age verification
+            document.getElementById('ageTitle').textContent = t.ageTitle;
+            document.querySelectorAll('.age-verification-content p')[0].textContent = t.ageWarning;
+            document.querySelectorAll('.age-verification-content p')[1].innerHTML = `<strong>${t.ageQuestion}</strong>`;
+            document.getElementById('ageVerifyYes').innerHTML = t.ageYes;
+            document.getElementById('ageVerifyNo').innerHTML = t.ageNo;
+            document.querySelector('.age-warning').innerHTML = t.ageConsent;
+            
+            // Update auth form
+            document.getElementById('logoSubtitle').textContent = t.logoSubtitle;
+            document.getElementById('loginTab').textContent = t.loginTab;
+            document.getElementById('registerTab').textContent = t.registerTab;
+            document.getElementById('loginUsernameLabel').textContent = t.loginUsernameLabel;
+            document.getElementById('loginPasswordLabel').textContent = t.loginPasswordLabel;
+            document.getElementById('loginBtn').textContent = t.loginBtn;
+            document.getElementById('registerUsernameLabel').textContent = t.registerUsernameLabel;
+            document.getElementById('registerEmailLabel').textContent = t.registerEmailLabel;
+            document.getElementById('registerPasswordLabel').textContent = t.registerPasswordLabel;
+            document.getElementById('registerPasswordConfirmLabel').textContent = t.registerPasswordConfirmLabel;
+            document.getElementById('passwordRequirements').textContent = t.passwordRequirements;
+            document.getElementById('registerBtn').textContent = t.registerBtn;
+            document.getElementById('adminLinkText').innerHTML = `${t.adminLinkText} <a href="/admin-login.html" style="color: #1e3a8a; text-decoration: none; font-weight: 600;">${t.adminLinkBtn}</a>`;
+            
+            localStorage.setItem('language', currentLanguage);
+        }
+
+        // Language switch handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('ageLangSwitch').addEventListener('click', function() {
+                currentLanguage = currentLanguage === 'en' ? 'zh' : 'en';
+                updateLanguage();
+            });
+
+            document.getElementById('authLangSwitch').addEventListener('click', function() {
+                currentLanguage = currentLanguage === 'en' ? 'zh' : 'en';
+                updateLanguage();
+            });
+
+            updateLanguage();
+        });
+
+        function switchTab(tab) {
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update forms
+            document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+            document.getElementById(tab + '-form').classList.add('active');
+            
+            // Clear messages
+            document.getElementById('message-container').innerHTML = '';
+        }
+
+        function showMessage(message, type = 'error') {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Logging in...';
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage('Login successful! Redirecting...', 'success');
+                    
+                    // Store session token
+                    localStorage.setItem('session_token', data.session_token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Redirect to main app (admins use separate login)
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    // Check if error is about admin login
+                    if (data.error && data.error.includes('admin login')) {
+                        showMessage('Admins must use the admin login page');
+                        setTimeout(() => {
+                            window.location.href = '/admin-login.html';
+                        }, 2000);
+                    } else {
+                        showMessage(data.error || 'Login failed');
+                    }
+                    btn.disabled = false;
+                    btn.textContent = 'Login';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Network error. Please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Login';
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const passwordConfirm = document.getElementById('register-password-confirm').value;
+            const btn = document.getElementById('register-btn');
+            
+            // Validate passwords match
+            if (password !== passwordConfirm) {
+                showMessage('Passwords do not match');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = 'Registering...';
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage('Registration successful! Please login.', 'success');
+                    
+                    // Switch to login tab after 2 seconds
+                    setTimeout(() => {
+                        document.querySelector('.tab').click();
+                        document.getElementById('login-username').value = username;
+                    }, 2000);
+                } else {
+                    showMessage(data.error || 'Registration failed');
+                    btn.disabled = false;
+                    btn.textContent = 'Register';
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showMessage('Network error. Please try again.');
+                btn.disabled = false;
+                btn.textContent = 'Register';
+            }
+        }
+
+        // Check if already logged in
+        async function checkExistingAuth() {
+            try {
+                const response = await fetch('/api/auth/check');
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    // Regular users only - admins use separate login
+                    if (!data.user.is_admin) {
+                        window.location.href = '/';
+                    }
+                }
+            } catch (error) {
+                // Not logged in, stay on login page
+            }
+        }
+
+        // Age verification - ALWAYS show (like proper adult sites)
+        const ageVerification = document.getElementById('ageVerification');
+        const ageVerifyYes = document.getElementById('ageVerifyYes');
+        const ageVerifyNo = document.getElementById('ageVerifyNo');
+        const authContainer = document.querySelector('.auth-container');
+
+        // Always hide auth container initially - must verify age every time
+        authContainer.style.display = 'none';
+        ageVerification.classList.remove('hidden');
+
+        // Handle age verification yes
+        ageVerifyYes.addEventListener('click', function() {
+            ageVerification.classList.add('hidden');
+            authContainer.style.display = 'block';
+        });
+
+        // Handle age verification no
+        ageVerifyNo.addEventListener('click', function() {
+            alert(translations[currentLanguage].ageAlert);
+            window.location.href = 'https://www.google.com';
+        });
+
+        checkExistingAuth();
+    </script>
+</body>
+</html>

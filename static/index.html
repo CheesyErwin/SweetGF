@@ -107,6 +107,11 @@
             gap: 10px;
             align-items: center;
         }
+        
+        /* User menu dropdown styles */
+        #userDropdown button:hover {
+            background: #f3f4f6;
+        }
 
         .main-content {
             display: flex;
@@ -181,17 +186,18 @@
         }
 
         .media-browser.collapsed .collapse-btn {
-            transform: rotate(180deg);
+            display: none;
         }
 
         .media-content {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            padding: 12px;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
             align-content: start;
+            grid-auto-rows: 120px;
         }
 
         .media-browser.collapsed .media-content {
@@ -210,17 +216,17 @@
 
         .media-item {
             position: relative;
-            aspect-ratio: 1;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(167, 139, 250, 0.1) 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .media-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
             z-index: 10;
         }
 
@@ -228,6 +234,11 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .media-item:hover img {
+            transform: scale(1.1);
         }
 
         .media-item-badge {
@@ -1194,146 +1205,29 @@
                 font-size: 12px;
             }
         }
-        /* Age Verification Modal */
-        .age-verification-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            backdrop-filter: blur(10px);
-        }
-
-        .age-verification-overlay.hidden {
-            display: none;
-        }
-
-        .age-verification-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 50px 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            color: white;
-            position: relative;
-        }
-
-        .age-verification-content h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .age-verification-content h2 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .age-verification-content p {
-            font-size: 16px;
-            margin-bottom: 30px;
-            opacity: 0.95;
-            line-height: 1.6;
-        }
-
-        .age-verification-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .age-verification-buttons button {
-            flex: 1;
-            padding: 18px;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .age-verify-yes {
-            background: white;
-            color: #764ba2;
-        }
-
-        .age-verify-yes:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
-        }
-
-        .age-verify-no {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid white;
-        }
-
-        .age-verify-no:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .age-warning {
-            margin-top: 20px;
-            font-size: 13px;
-            opacity: 0.8;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            padding-top: 20px;
-        }
-
-        .age-lang-switch {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .age-lang-switch:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-2px);
-        }
     </style>
 </head>
 <body>
-    <!-- Age Verification Modal -->
-    <div class="age-verification-overlay" id="ageVerification">
-        <div class="age-verification-content">
-            <button class="age-lang-switch" id="ageLangSwitch" title="Switch Language / 切換語言">
-                🌐 EN
+    <!-- Main Menu Modal -->
+    <div class="modal-overlay" id="mainMenu" style="display: none;">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2 style="margin-bottom: 20px;">💕 SweetGF</h2>
+            <p style="margin-bottom: 30px; color: #6b7280;">Your Virtual Companion</p>
+            
+            <div id="savedGirlfriendsContainer" style="margin-bottom: 30px; display: none;">
+                <h3 style="font-size: 18px; margin-bottom: 15px; color: #374151;">Continue with:</h3>
+                <div id="savedGirlfriendsList" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Saved girlfriends will be populated here -->
+                </div>
+            </div>
+            
+            <button id="newGirlfriendBtn" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 10px;">
+                ✨ Create New Girlfriend
             </button>
-            <h1>🔞</h1>
-            <h2>Age Verification Required</h2>
-            <p>This app contains adult content and explicit material intended for mature audiences only.</p>
-            <p><strong>Are you 18 years of age or older?</strong></p>
             
-            <div class="age-verification-buttons">
-                <button class="age-verify-yes" id="ageVerifyYes">
-                    ✓ Yes, I am 18+
-                </button>
-                <button class="age-verify-no" id="ageVerifyNo">
-                    ✗ No, I'm under 18
-                </button>
-            </div>
-            
-            <div class="age-warning">
-                ⚠️ By clicking "Yes", you confirm that you are of legal age and consent to viewing adult content.
-            </div>
+            <button id="loadGirlfriendBtn" style="width: 100%; padding: 15px; background: white; color: #f5576c; border: 2px solid #f5576c; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer;">
+                📂 Load Saved Girlfriend
+            </button>
         </div>
     </div>
 
@@ -1443,6 +1337,21 @@
                     <div class="preset-name" data-preset-key="nova">Nova</div>
                     <div class="preset-desc" data-preset-key="nova">Sporty & Fun</div>
                 </div>
+                <div class="preset-card" data-preset="yuki">
+                    <div class="preset-avatar"><img src="/static/avatars/yuki_avatar.png" alt="Yuki"></div>
+                    <div class="preset-name" data-preset-key="yuki">Yuki</div>
+                    <div class="preset-desc" data-preset-key="yuki">Obsessive & Devoted</div>
+                </div>
+                <div class="preset-card" data-preset="rin">
+                    <div class="preset-avatar"><img src="/static/avatars/rin_avatar.png" alt="Rin"></div>
+                    <div class="preset-name" data-preset-key="rin">Rin</div>
+                    <div class="preset-desc" data-preset-key="rin">Tsundere</div>
+                </div>
+                <div class="preset-card" data-preset="sophia">
+                    <div class="preset-avatar"><img src="/static/avatars/sophia_avatar.png" alt="Sophia"></div>
+                    <div class="preset-name" data-preset-key="sophia">Sophia</div>
+                    <div class="preset-desc" data-preset-key="sophia">Smart & Witty</div>
+                </div>
             </div>
             
             <label style="display: block; margin-bottom: 8px; margin-top: 15px; color: #374151; font-weight: 600; font-size: 14px;">
@@ -1471,13 +1380,14 @@
                 <option value="energetic">Sporty & Energetic</option>
                 <option value="caring">Caring & Nurturing</option>
                 <option value="tsundere">Tsundere (Cold but Sweet)</option>
+                <option value="yandere">Yandere (Obsessive & Devoted)</option>
                 <option value="cheerful">Cheerful & Optimistic</option>
                 <option value="intellectual">Intellectual & Thoughtful</option>
             </select>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
                 <div>
-                    <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 14px;">
+                    <label id="hairColorLabel" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 14px;">
                         Hair Color:
                     </label>
                     <select 
@@ -1497,7 +1407,7 @@
                     </select>
                 </div>
                 <div>
-                    <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 14px;">
+                    <label id="eyeColorLabel" style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 14px;">
                         Eye Color:
                     </label>
                     <select 
@@ -1518,7 +1428,7 @@
                 </div>
             </div>
             
-            <div id="customBodyOptions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+            <div id="customBodyOptions" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
                 <div>
                     <label style="display: block; margin-bottom: 8px; color: #374151; font-weight: 600; font-size: 14px;">
                         Body Shape:
@@ -1554,7 +1464,7 @@
                 </div>
             </div>
             
-            <label style="display: block; margin-bottom: 8px; margin-top: 15px; color: #374151; font-weight: 600; font-size: 14px;">
+            <label id="outfitLabel" style="display: block; margin-bottom: 8px; margin-top: 15px; color: #374151; font-weight: 600; font-size: 14px;">
                 Her Outfit:
             </label>
             <select 
@@ -1568,7 +1478,19 @@
                 <option value="sporty">Sporty Outfit</option>
                 <option value="elegant">Elegant Outfit</option>
                 <option value="kimono">Traditional Kimono</option>
+                <option value="yukata">Yukata (Summer Kimono)</option>
+                <option value="qipao">Qipao / Cheongsam</option>
+                <option value="maid">Maid Outfit</option>
+                <option value="nurse">Nurse Outfit</option>
+                <option value="office">Office Lady</option>
+                <option value="gothic">Gothic Lolita</option>
+                <option value="hoodie">Hoodie & Shorts</option>
+                <option value="tracksuit">Track Suit</option>
+                <option value="sundress">Sundress</option>
+                <option value="turtleneck">Turtleneck Sweater</option>
+                <option value="blazer">Blazer & Shirt</option>
                 <option value="pajamas">Comfy Pajamas</option>
+                <option value="nightgown">Nightgown</option>
                 <option value="lingerie">🔥 Lingerie</option>
                 <option value="bikini">🔥 Bikini / Swimsuit</option>
                 <option value="towel">🔥 Bath Towel</option>
@@ -1584,7 +1506,7 @@
                 style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 14px; margin-bottom: 8px; outline: none; display: none;"
             >
             
-            <label style="display: block; margin-bottom: 8px; margin-top: 15px; color: #374151; font-weight: 600; font-size: 14px;">
+            <label id="pictureStyleLabel" style="display: block; margin-bottom: 8px; margin-top: 15px; color: #374151; font-weight: 600; font-size: 14px;">
                 Picture Style:
             </label>
             <select 
@@ -1628,6 +1550,30 @@
                 <button id="loadGirlfriendBtnHeader" style="background: #8b5cf6; border: none; border-radius: 8px; color: white; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; margin-right: 10px; transition: all 0.3s;" title="Load Girlfriend">📂 Load</button>
                 <div class="status-indicator" style="cursor: pointer;" id="languageSelector" title="Switch Language / 切換語言">
                     <span id="currentLanguage">🌐 EN</span>
+                </div>
+                <!-- User Menu -->
+                <div id="userMenu" style="margin-left: 10px; position: relative;">
+                    <!-- Not logged in -->
+                    <button id="loginBtn" style="background: #10b981; border: none; border-radius: 8px; color: white; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;" onclick="window.location.href='/login.html'">
+                        👤 Login
+                    </button>
+                    <!-- Logged in (hidden by default) -->
+                    <div id="userInfo" style="display: none; position: relative;">
+                        <button id="userMenuBtn" style="background: #667eea; border: none; border-radius: 8px; color: white; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                            👤 <span id="usernameDisplay">User</span> ▼
+                        </button>
+                        <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 45px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); min-width: 150px; z-index: 1000;">
+                            <div style="padding: 10px; border-bottom: 1px solid #eee; color: #666; font-size: 12px;">
+                                <span id="userEmail">user@example.com</span>
+                            </div>
+                            <button id="adminPanelBtn" style="display: none; width: 100%; text-align: left; padding: 10px 15px; border: none; background: none; cursor: pointer; font-size: 14px; transition: background 0.2s;" onclick="window.location.href='/admin.html'">
+                                ⚙️ Admin Panel
+                            </button>
+                            <button style="width: 100%; text-align: left; padding: 10px 15px; border: none; background: none; cursor: pointer; font-size: 14px; transition: background 0.2s;" onclick="logoutUser()">
+                                🚪 Logout
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1733,6 +1679,91 @@
         let characterAppearance = localStorage.getItem('characterAppearance') || null;
         let referenceImage = localStorage.getItem('referenceImage') || null;
 
+        // Authentication state
+        let currentUser = null;
+        
+        // Check authentication status on page load - REQUIRED
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/auth/check');
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    currentUser = data.user;
+                    updateUserUI(true);
+                    return true;
+                } else {
+                    // Not authenticated - redirect to login
+                    console.log('[Auth] Not authenticated, redirecting to login...');
+                    window.location.href = '/login.html';
+                    return false;
+                }
+            } catch (error) {
+                console.log('[Auth] Auth check failed, redirecting to login...');
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+        
+        // Update UI based on auth status
+        function updateUserUI(isLoggedIn) {
+            const loginBtn = document.getElementById('loginBtn');
+            const userInfo = document.getElementById('userInfo');
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            const userEmail = document.getElementById('userEmail');
+            const adminPanelBtn = document.getElementById('adminPanelBtn');
+            
+            if (isLoggedIn && currentUser) {
+                loginBtn.style.display = 'none';
+                userInfo.style.display = 'block';
+                usernameDisplay.textContent = currentUser.username;
+                userEmail.textContent = currentUser.email || '';
+                
+                // Show admin panel button if user is admin
+                if (currentUser.is_admin) {
+                    adminPanelBtn.style.display = 'block';
+                }
+            } else {
+                loginBtn.style.display = 'block';
+                userInfo.style.display = 'none';
+            }
+        }
+        
+        // Toggle user dropdown
+        document.addEventListener('DOMContentLoaded', function() {
+            const userMenuBtn = document.getElementById('userMenuBtn');
+            const userDropdown = document.getElementById('userDropdown');
+            
+            if (userMenuBtn) {
+                userMenuBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+                });
+            }
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function() {
+                if (userDropdown) {
+                    userDropdown.style.display = 'none';
+                }
+            });
+            
+            // Check auth status on load
+            checkAuthStatus();
+        });
+        
+        // Logout function
+        async function logoutUser() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                currentUser = null;
+                updateUserUI(false);
+                alert('Logged out successfully');
+            } catch (error) {
+                console.error('[Auth] Logout error:', error);
+            }
+        }
+        
         // Emoji reaction functions - MUST be defined early for onclick handlers
         let messageReactions = {}; // Store reactions: { messageId: { emoji: count } }
         
@@ -1975,6 +2006,21 @@
                         name: "Nova", 
                         desc: "Sporty & Fun",
                         greeting: "Hey! *gives energetic wave* I'm Nova! Ready to have some fun? *grins brightly* Let's make today awesome together! 💪⭐"
+                    },
+                    yuki: { 
+                        name: "Yuki", 
+                        desc: "Obsessive & Devoted",
+                        greeting: "*stares intensely with loving eyes* Hi... I'm Yuki. I've been waiting for you... *smiles sweetly* You're finally here. I'll never let you go now... ❤️💕"
+                    },
+                    rin: { 
+                        name: "Rin", 
+                        desc: "Tsundere",
+                        greeting: "*crosses arms and looks away* Hmph... I'm Rin. It's not like I wanted to meet you or anything! *blushes* D-don't get the wrong idea, baka! 😤💕"
+                    },
+                    sophia: { 
+                        name: "Sophia", 
+                        desc: "Smart & Witty",
+                        greeting: "*adjusts glasses with a smirk* Greetings. I'm Sophia. *looks at you analytically* Interesting... You seem like someone worth having an intellectual discourse with. Shall we? 🤓📚"
                     }
                 }
             },
@@ -2015,6 +2061,7 @@
                     energetic: "運動活力",
                     caring: "溫柔體貼",
                     tsundere: "傲嬌（外冷內熱）",
+                    yandere: "病嬌（執著奉獻）",
                     cheerful: "開朗樂觀",
                     intellectual: "知性深思"
                 },
@@ -2108,6 +2155,21 @@
                         name: "諾娃 (Nova)", 
                         desc: "運動活力",
                         greeting: "嘿！*充滿活力地揮手* 我是諾娃！準備好玩樂了嗎？*燦爛地笑* 讓我們一起讓今天變得超棒！💪⭐"
+                    },
+                    yuki: { 
+                        name: "雪 (Yuki)", 
+                        desc: "病嬌（執著奉獻）",
+                        greeting: "*用充滿愛意的眼神凝視* 嗨...我是雪。我一直在等你... *甜美地微笑* 你終於來了。我永遠不會讓你離開... ❤️💕"
+                    },
+                    rin: { 
+                        name: "凜 (Rin)", 
+                        desc: "傲嬌",
+                        greeting: "*抱臂看向別處* 哼...我是凜。才不是想見你呢！*臉紅* 不-不要誤會，笨蛋！😤💕"
+                    },
+                    sophia: { 
+                        name: "蘇菲亞 (Sophia)", 
+                        desc: "聰慧機智",
+                        greeting: "*扶眼鏡並露出微笑* 你好。我是蘇菲亞。*分析地看著你* 有趣...你看起來是個值得進行智力交流的人。要開始嗎？🤓📚"
                     }
                 }
             }
@@ -2128,10 +2190,6 @@
         // Elements
         const languageSelector = document.getElementById('languageSelector');
         const currentLanguageSpan = document.getElementById('currentLanguage');
-        const ageLangSwitch = document.getElementById('ageLangSwitch');
-        const ageVerification = document.getElementById('ageVerification');
-        const ageVerifyYes = document.getElementById('ageVerifyYes');
-        const ageVerifyNo = document.getElementById('ageVerifyNo');
         const chatContainer = document.getElementById('chatContainer');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -2296,15 +2354,6 @@
             // Update language indicator
             const langText = currentLanguage === 'en' ? '🌐 EN' : '🌐 中文';
             currentLanguageSpan.textContent = langText;
-            ageLangSwitch.textContent = langText;
-            
-            // Update age verification modal
-            document.querySelector('.age-verification-content h2').textContent = t.ageTitle;
-            document.querySelectorAll('.age-verification-content p')[0].textContent = t.ageWarning;
-            document.querySelectorAll('.age-verification-content p')[1].innerHTML = `<strong>${t.ageQuestion}</strong>`;
-            ageVerifyYes.innerHTML = t.ageYes;
-            ageVerifyNo.innerHTML = t.ageNo;
-            document.querySelector('.age-warning').innerHTML = t.ageConsent;
             
             // Update name modal
             document.querySelector('.modal-content p').textContent = t.welcomeModalTitle;
@@ -2318,6 +2367,12 @@
             document.querySelector('#cancelNameBtn').textContent = t.cancelButton;
             document.querySelector('.name-hint').textContent = t.customizeHint;
             
+            // Update labels
+            document.getElementById('hairColorLabel').textContent = t.hairColorLabel || 'Hair Color:';
+            document.getElementById('eyeColorLabel').textContent = t.eyeColorLabel || 'Eye Color:';
+            document.getElementById('outfitLabel').textContent = t.outfitLabel || 'Her Outfit:';
+            document.getElementById('pictureStyleLabel').textContent = t.pictureStyle || 'Picture Style:';
+            
             // Update personality options
             const personalitySelect = document.getElementById('girlfriendPersonalitySelect');
             personalitySelect.options[0].text = t.personalities.shy;
@@ -2328,8 +2383,9 @@
             personalitySelect.options[5].text = t.personalities.energetic;
             personalitySelect.options[6].text = t.personalities.caring;
             personalitySelect.options[7].text = t.personalities.tsundere;
-            personalitySelect.options[8].text = t.personalities.cheerful;
-            personalitySelect.options[9].text = t.personalities.intellectual;
+            personalitySelect.options[8].text = t.personalities.yandere || 'Yandere (Obsessive & Devoted)';
+            personalitySelect.options[9].text = t.personalities.cheerful;
+            personalitySelect.options[10].text = t.personalities.intellectual;
             
             // Update outfit options
             const outfitSelect = document.getElementById('girlfriendOutfitSelect');
@@ -2422,99 +2478,10 @@
         });
 
         // Age verification language switch
-        ageLangSwitch.addEventListener('click', function() {
-            currentLanguage = currentLanguage === 'en' ? 'zh' : 'en';
-            updateLanguage();
-        });
-
-        // Age verification
-        function checkAgeVerification() {
-            // Always show age verification modal on page load
-            ageVerification.classList.remove('hidden');
-        }
-
-        // Handle age verification yes
-        ageVerifyYes.addEventListener('click', function() {
-            // Don't save to localStorage - verify each time
-            ageVerification.classList.add('hidden');
-            initNameModal();
-        });
-
-        // Handle age verification no
-        ageVerifyNo.addEventListener('click', function() {
-            alert(translations[currentLanguage].ageAlert);
-            window.location.href = 'https://www.google.com';
-        });
-
-        // Initialize name modal
-        function initNameModal() {
-            // Restore saved preset selection
-            const savedPreset = localStorage.getItem('selectedPreset');
-            if (savedPreset) {
-                // Find and select the saved preset card
-                presetCards.forEach(card => {
-                    if (card.dataset.preset === savedPreset) {
-                        card.classList.add('selected');
-                        // Trigger the preset selection logic
-                        const preset = girlfriendPresets[savedPreset];
-                        if (preset) {
-                            const t = translations[currentLanguage] || translations['en'] || {};
-                            const translatedName = t.presets?.[savedPreset]?.name || preset.name;
-                            girlfriendNameInput.value = translatedName;
-                            girlfriendOutfitSelect.value = preset.outfit;
-                            bodyCompositionSelect.value = preset.composition;
-                            hairColorSelect.value = preset.hairColor || 'brown';
-                            eyeColorSelect.value = preset.eyeColor || 'brown';
-                            customBodyOptions.style.display = 'none';
-                            customizeHint.textContent = t.customize?.presetHint || 'Preset selected! You can still adjust name, outfit & picture style.';
-                        } else if (savedPreset === 'custom') {
-                            customBodyOptions.style.display = 'grid';
-                            customizeHint.textContent = 'Customize name, appearance, body, outfit & picture style!';
-                        }
-                    } else {
-                        card.classList.remove('selected');
-                    }
-                });
-            }
-            
-            // Check if name is already stored
-            const storedName = localStorage.getItem('girlfriendName');
-            
-            if (storedName) {
-                setGirlfriendName(storedName);
-                nameModal.classList.add('hidden');
-                
-                // Check if there are existing messages
-                const storageKey = `chatMessages_${storedName}`;
-                const existingMessages = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                const hasExistingConversation = existingMessages.length > 0;
-                
-                // Load saved messages
-                loadMessagesFromLocalStorage();
-                
-                // Load saved media
-                loadMediaFromLocalStorage();
-                
-                // Check if we have a saved profile image
-                const storedProfileImage = localStorage.getItem('profileImageUrl');
-                
-                if (storedProfileImage) {
-                    // Display existing profile image
-                    // Don't generate greeting if conversation already exists
-                    console.log('[Profile] Using saved profile image:', storedProfileImage);
-                    displaySavedProfileImage(storedName, storedProfileImage, null, !hasExistingConversation);
-                } else {
-                    // No saved profile image, generate new one
-                    generateProfileImage(storedName);
-                }
-                
-                // Don't generate continuation message - let user initiate conversation
-                // The conversation history is already loaded and visible
-            } else {
-                // Show modal
-                nameModal.classList.remove('hidden');
-                girlfriendNameInput.focus();
-            }
+        // Initialize main menu (no age verification needed - handled on login page)
+        function initMainMenu() {
+            mainMenu.style.display = 'flex';
+            populateSavedGirlfriends();
         }
 
         // Girlfriend presets
@@ -2526,8 +2493,8 @@
                 eyeColor: 'blue',
                 outfit: 'pajamas',
                 composition: 'half',
+                personality: 'shy',
                 backstory: "A gentle soul who works at a cozy bookstore cafe. Luna loves reading romance novels under moonlight and has a secret talent for writing poetry. She's been hurt before, which makes her cautious, but once she opens up, her warmth is endless. Dreams of traveling to see the Northern Lights someday.",
-                personality: "Shy and sweet, but surprisingly passionate once comfortable. Loves quiet moments, stargazing, and deep conversations. Gets flustered easily but finds it endearing when you tease her gently.",
                 likes: "Books, tea, rainy days, soft music, handwritten letters",
                 quirks: "Hides her face when embarrassed, quotes poetry randomly, keeps a dream journal"
             },
@@ -2538,8 +2505,8 @@
                 eyeColor: 'brown',
                 outfit: 'school',
                 composition: 'full',
+                personality: 'playful',
                 backstory: "A university student studying art who works part-time at a bubble tea shop. Sakura is the youngest of three siblings and grew up in a lively household. She's always been the cheerful one who brings people together. Secretly dreams of becoming a manga artist.",
-                personality: "Playful and cute, full of energy and optimism. Loves trying new things and making people smile. Can be a bit clumsy but it's part of her charm. Surprisingly competitive when gaming.",
                 likes: "Anime, bubble tea, cute stationery, arcade games, cherry blossoms",
                 quirks: "Makes sound effects when excited, collects plushies, doodles on everything"
             },
@@ -2550,8 +2517,8 @@
                 eyeColor: 'amber',
                 outfit: 'lingerie',
                 composition: 'half',
+                personality: 'confident',
                 backstory: "A successful fashion designer who runs her own boutique. Amber grew up in the city and learned early that confidence is key. She's had her share of admirers but is selective about who gets close. Enjoys the finer things in life but values genuine connection above all.",
-                personality: "Bold and confident, knows what she wants and isn't afraid to go after it. Flirtatious and playful, but also fiercely loyal. Has a soft spot for romantic gestures despite her tough exterior.",
                 likes: "Wine, designer fashion, jazz music, expensive perfume, sunset views",
                 quirks: "Always wears red lipstick, has a collection of vintage jewelry, purrs when content"
             },
@@ -2562,8 +2529,8 @@
                 eyeColor: 'green',
                 outfit: 'elegant',
                 composition: 'full',
+                personality: 'elegant',
                 backstory: "A classical pianist and music teacher from a prestigious family. Jade studied abroad in Vienna and carries herself with grace. Despite her refined upbringing, she yearns for genuine emotional connection beyond social expectations. Finds beauty in imperfection.",
-                personality: "Elegant and mature, speaks with poise and thoughtfulness. Appreciates art, culture, and meaningful conversation. Surprisingly playful in private. Values intelligence and emotional depth.",
                 likes: "Classical music, fine dining, art galleries, gardens, philosophical discussions",
                 quirks: "Plays piano when stressed, always sits with perfect posture, secretly loves rom-coms"
             },
@@ -2574,8 +2541,8 @@
                 eyeColor: 'violet',
                 outfit: 'dress',
                 composition: 'half',
+                personality: 'mysterious',
                 backstory: "A tarot reader and occult shop owner with an enigmatic past. Violet moved to the city three years ago and no one knows much about her history. She seems to know more than she lets on and has an uncanny ability to read people. Believes in fate and destiny.",
-                personality: "Mysterious and teasing, enjoys keeping you guessing. Playfully flirtatious with a hint of danger. Deeply intuitive and perceptive. Opens up slowly, revealing layers like a puzzle.",
                 likes: "Tarot cards, candles, mystery novels, stargazing, secrets",
                 quirks: "Speaks in riddles sometimes, has a black cat, knows your thoughts before you speak"
             },
@@ -2586,10 +2553,46 @@
                 eyeColor: 'blue',
                 outfit: 'sporty',
                 composition: 'full',
+                personality: 'energetic',
                 backstory: "A personal trainer and yoga instructor who lives life to the fullest. Nova grew up near the beach and has always been active. She believes in pushing limits and living without regrets. Competed in marathons and dreams of climbing Mount Everest someday.",
-                personality: "Energetic and enthusiastic, always ready for adventure. Motivating and supportive, brings out the best in others. Down-to-earth despite her stunning looks. Loves physical affection.",
                 likes: "Fitness, smoothies, outdoor activities, sunrise runs, motivational quotes",
                 quirks: "Does stretches randomly, always has a protein shake, high-fives instead of handshakes"
+            },
+            yuki: {
+                name: 'Yuki',
+                appearance: 'long black hair with pink highlights, red eyes, heart-shaped pupils, sweet smile, white coat, medical student',
+                hairColor: 'black',
+                eyeColor: 'red',
+                outfit: 'school',
+                composition: 'half',
+                personality: 'yandere',
+                backstory: "A medical student who lives alone in a quiet apartment. You've always been intensely focused on the people you care about. You had a lonely childhood and now that you've found someone special, you'll do anything to keep them.",
+                likes: "Being together, photos of them, knowing their schedule, cooking for them, matching items",
+                quirks: "Checks their location often, gets jealous of anyone they mention, keeps everything they give you, memorized their habits"
+            },
+            rin: {
+                name: 'Rin',
+                appearance: 'orange-red twin tails, amber eyes, red blazer, white shirt, red necktie, tsundere expression, arms crossed',
+                hairColor: 'orange',
+                eyeColor: 'amber',
+                outfit: 'blazer',
+                composition: 'half',
+                personality: 'tsundere',
+                backstory: "A law student and debate club president from a strict family. You've built walls around your heart after being hurt before. You act tough and dismissive, but deep down you care more than you let on.",
+                likes: "Spicy food, competitive games, winning arguments, cats (won't admit it), romance novels (hidden)",
+                quirks: "Says 'hmph' and 'baka' often, turns away when blushing, denies everything, leaves snacks while pretending not to care"
+            },
+            sophia: {
+                name: 'Sophia',
+                appearance: 'short brown bob cut, green eyes, glasses, pen in mouth, book, coffee cup, turtleneck sweater, blazer, intelligent smirk',
+                hairColor: 'brown',
+                eyeColor: 'green',
+                outfit: 'turtleneck',
+                composition: 'half',
+                personality: 'intellectual',
+                backstory: "A PhD candidate in astrophysics who codes as a hobby. You graduated university at 19 and have published several papers. You're passionate about knowledge and love sharing what you learn.",
+                likes: "Books, science, puzzles, chess, witty debates, documentaries, coffee",
+                quirks: "Corrects grammar playfully, makes science puns, quotes literature, explains things with analogies"
             }
         };
 
@@ -2617,6 +2620,7 @@
                     const t = translations[currentLanguage];
                     const translatedName = t.presets[selectedPreset]?.name || preset.name;
                     girlfriendNameInput.value = translatedName;
+                    girlfriendPersonalitySelect.value = preset.personality || 'shy';
                     girlfriendOutfitSelect.value = preset.outfit;
                     bodyCompositionSelect.value = preset.composition;
                     hairColorSelect.value = preset.hairColor || 'brown';
@@ -2629,6 +2633,7 @@
                 } else {
                     // Custom - clear fields and show body options
                     girlfriendNameInput.value = '';
+                    girlfriendPersonalitySelect.value = 'shy';
                     girlfriendOutfitSelect.value = 'casual';
                     bodyCompositionSelect.value = 'half';
                     hairColorSelect.value = 'brown';
@@ -2762,6 +2767,9 @@
             if (isRename || presetChanged) {
                 await clearConversation();
             }
+            
+            // Save girlfriend data for main menu
+            saveGirlfriendData(name);
             
             messageInput.focus();
         }
@@ -4003,6 +4011,143 @@
         // Initialize
         // Initialize on page load
         
+        // Main Menu System
+        const mainMenu = document.getElementById('mainMenu');
+        const newGirlfriendBtn = document.getElementById('newGirlfriendBtn');
+        const loadGirlfriendBtn = document.getElementById('loadGirlfriendBtn');
+        const savedGirlfriendsContainer = document.getElementById('savedGirlfriendsContainer');
+        const savedGirlfriendsList = document.getElementById('savedGirlfriendsList');
+        
+        function saveGirlfriendData(name) {
+            // Save girlfriend data for later loading
+            const data = {
+                name: name,
+                sessionId: sessionId,
+                preset: localStorage.getItem('currentPreset') || 'custom',
+                outfit: localStorage.getItem('girlfriendOutfit') || 'casual',
+                personality: localStorage.getItem('girlfriendPersonality') || 'balanced',
+                bodyComposition: localStorage.getItem('girlfriendBodyComposition') || 'half',
+                savedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`girlfriendData_${name}`, JSON.stringify(data));
+            console.log('[Save] Saved girlfriend data for:', name);
+        }
+        
+        async function populateSavedGirlfriends() {
+            try {
+                // Fetch saved girlfriends from backend
+                const response = await fetch('/api/list-girlfriends');
+                const data = await response.json();
+                
+                if (data.girlfriends && data.girlfriends.length > 0) {
+                    savedGirlfriendsContainer.style.display = 'block';
+                    savedGirlfriendsList.innerHTML = '';
+                    
+                    console.log('[Main Menu] Found', data.girlfriends.length, 'saved girlfriends');
+                    
+                    data.girlfriends.forEach(gf => {
+                        const btn = document.createElement('button');
+                        btn.style.cssText = 'padding: 15px; background: white; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer; text-align: left; transition: all 0.3s;';
+                        
+                        // Format last updated date
+                        const lastUpdated = gf.last_updated ? new Date(gf.last_updated).toLocaleDateString() : 'Unknown';
+                        
+                        btn.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="font-size: 32px;">💕</div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; font-size: 16px; color: #374151;">${gf.name}</div>
+                                    <div style="font-size: 12px; color: #9ca3af;">
+                                        Affection: ${gf.affection_level || 0} | Tokens: ${gf.tokens || 0}
+                                    </div>
+                                    <div style="font-size: 11px; color: #d1d5db;">Last: ${lastUpdated}</div>
+                                </div>
+                            </div>
+                        `;
+                        btn.onmouseover = () => btn.style.borderColor = '#f5576c';
+                        btn.onmouseout = () => btn.style.borderColor = '#e5e7eb';
+                        btn.onclick = () => loadSavedGirlfriendFromBackend(gf.session_id, gf.name);
+                        savedGirlfriendsList.appendChild(btn);
+                    });
+                } else {
+                    console.log('[Main Menu] No saved girlfriends found');
+                }
+            } catch (error) {
+                console.error('[Main Menu] Error loading saved girlfriends:', error);
+            }
+        }
+        
+        async function loadSavedGirlfriendFromBackend(session_id, name) {
+            console.log('[Main Menu] Loading saved girlfriend from backend:', name, session_id);
+            
+            try {
+                // Load girlfriend data from backend
+                const response = await fetch('/api/load-girlfriend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: session_id })
+                });
+                
+                const loadData = await response.json();
+                
+                if (loadData.success) {
+                    // Hide main menu
+                    mainMenu.style.display = 'none';
+                    
+                    // Set session data
+                    sessionId = loadData.data.session_id;
+                    localStorage.setItem('sessionId', sessionId);
+                    localStorage.setItem('girlfriendName', loadData.data.girlfriend_name);
+                    
+                    // Set girlfriend name
+                    setGirlfriendName(loadData.data.girlfriend_name);
+                    nameModal.classList.add('hidden');
+                    
+                    // Load saved messages
+                    loadMessagesFromLocalStorage();
+                    
+                    // Load saved media
+                    loadMediaFromLocalStorage();
+                    
+                    // Check if we have a saved profile image
+                    const storedProfileImage = localStorage.getItem('profileImageUrl');
+                    if (storedProfileImage) {
+                        console.log('[Profile] Using saved profile image:', storedProfileImage);
+                        const storageKey = `chatMessages_${loadData.data.girlfriend_name}`;
+                        const existingMessages = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                        const hasExistingConversation = existingMessages.length > 0;
+                        displaySavedProfileImage(loadData.data.girlfriend_name, storedProfileImage, null, !hasExistingConversation);
+                    } else {
+                        // No saved profile image, generate new one
+                        generateProfileImage(loadData.data.girlfriend_name);
+                    }
+                    
+                    console.log('[Main Menu] Successfully loaded girlfriend:', loadData.data.girlfriend_name);
+                } else {
+                    alert('Failed to load girlfriend: ' + (loadData.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('[Main Menu] Error loading girlfriend:', error);
+                alert('Failed to load girlfriend: ' + error.message);
+            }
+        }
+        
+        newGirlfriendBtn.addEventListener('click', () => {
+            mainMenu.style.display = 'none';
+            nameModal.classList.remove('hidden');
+            girlfriendNameInput.focus();
+        });
+        
+        loadGirlfriendBtn.addEventListener('click', () => {
+            if (savedGirlfriendsList.children.length > 0) {
+                // Scroll to saved girlfriends
+                savedGirlfriendsContainer.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert('No saved girlfriends found. Please create a new one!');
+            }
+        });
+        
         // Restore media browser collapsed state
         const mediaBrowserCollapsed = localStorage.getItem('mediaBrowserCollapsed') === 'true';
         if (mediaBrowserCollapsed) {
@@ -4215,8 +4360,8 @@
             }
         });
         
-        // Check age verification first, then init app
-        checkAgeVerification();
+        // Auth check will redirect if not logged in
+        // Age verification is handled on login page
         
         // Load reactions after messages are loaded
         setTimeout(() => {
